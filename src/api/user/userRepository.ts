@@ -1,5 +1,5 @@
-import { User } from '../../model/user.entity';
-import dataSource from '../../config/typeorm.config';
+import { User } from "../../model/user.entity";
+import dataSource from "../../config/typeorm.config";
 
 export const userRepository = dataSource.getRepository(User).extend({
   async findAllAsync(): Promise<User[]> {
@@ -15,7 +15,10 @@ export const userRepository = dataSource.getRepository(User).extend({
     return this.save(newUser);
   },
 
-  async updateUserAsync(id: string, updateData: Partial<User>): Promise<User | null> {
+  async updateUserAsync(
+    id: string,
+    updateData: Partial<User>
+  ): Promise<User | null> {
     await this.update(id, updateData);
     return this.findOneBy({ id });
   },

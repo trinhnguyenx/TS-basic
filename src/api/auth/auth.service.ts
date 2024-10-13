@@ -106,9 +106,7 @@ export const authService = {
   },
   getUser: async (userId: string): Promise<ServiceResponse<User | null>> => {
     try {
-      console.log("user", userId);
       const user = await userRepository.findByIdAsync(userId);
-      console.log("user", user);
       if (!user) {
         return new ServiceResponse(
           ResponseStatus.Failed,
