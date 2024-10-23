@@ -1,17 +1,29 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Role } from './role.entity';
 import { DateTimeEntity } from './base/dateTimeEntity';
 
 @Entity('users')
 export class User extends DateTimeEntity {
-  @PrimaryGeneratedColumn()
-    public id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({ type: 'varchar', unique: true, length: 255 })
-    username: string;
+  @Column('varchar')
+  email: string;
 
-    @Column({ type: 'varchar', length: 255 })
-    public password: string;  
+  @Column('varchar')
+  password: string;
 
-    @Column({ type: 'varchar', unique: true, length: 255 })
-    public email: string;
+  @Column('varchar')
+  name: string;
+
+  @ManyToMany(() => Role, (role) => role.users, { cascade: true })
+  @JoinTable()
+  roles: Role[];
 }

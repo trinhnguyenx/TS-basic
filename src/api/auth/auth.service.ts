@@ -104,6 +104,7 @@ export const authService = {
       );
     }
   },
+
   getUser: async (userId: string): Promise<ServiceResponse<User | null>> => {
     try {
       const user = await userRepository.findByIdAsync(userId);
@@ -124,6 +125,37 @@ export const authService = {
       );
     } catch (ex) {
       const errorMessage = `Error getting user1: ${(ex as Error).message}`;
+      return new ServiceResponse(
+        ResponseStatus.Failed,
+        errorMessage,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  },
+  updateRoleUser: async (
+    userId: string,
+    roleName: string
+  ): Promise<ServiceResponse<User | null>> => {
+    try {
+      const updatedUser = await userRepository.updateUserRoleAsync(userId, roleName);
+      if (!updatedUser) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          "Error updating role user",
+          null,
+          StatusCodes.INTERNAL_SERVER_ERROR
+        );
+      }
+
+      return new ServiceResponse<User>(
+        ResponseStatus.Success,
+        "Role updated successfully",
+        updatedUser,
+        StatusCodes.OK
+      );
+    } catch (ex) {
+      const errorMessage = `Error updating role user: ${(ex as Error).message}`;
       return new ServiceResponse(
         ResponseStatus.Failed,
         errorMessage,

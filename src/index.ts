@@ -1,25 +1,30 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import authRouter from "./api/auth/auth.router";
-import { userRepository } from "./api/user/userRepository";
 import dataSource from "./config/typeorm.config";
 import { pino } from "pino";
+import { seedData } from "./config/seeder";
 
 const app: Express = express();
 const port = 3000;
 app.use(express.json());
 
-dataSource
-  .initialize()
-  .then(() => {
+const logger = pino({ name: "server start" });
+
+async function startApp() {
+  try {
+    await dataSource.initialize();
     logger.info("Data Source has been initialized!");
-  })
-  .catch((err) => {
+
+    await seedData(dataSource);
+  } catch (error) {
     const errorMessage = `Error during Data Source initialization:, ${
-      (err as Error).message
+      (error as Error).message
     }`;
     logger.error(errorMessage);
-  });
-const logger = pino({ name: "server start" });
+  }
+}
+
+startApp();
 
 app.use("/auth", authRouter);
 

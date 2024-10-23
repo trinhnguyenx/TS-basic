@@ -7,15 +7,13 @@ import { Login } from "./auth.interface";
 import { handleServiceResponse } from "../../services/httpHandlerResponse";
 
 export const AuthController = {
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response){
     const userData: User = req.body;
-    console.log("check data", userData);
     try {
       const serviceResponse = await authService.register(userData);
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
       const errorMessage = `Error creating user: ${(error as Error).message}`;
-
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: ResponseStatus.Failed,
         message: errorMessage,
@@ -25,7 +23,6 @@ export const AuthController = {
   },
   async login(req: Request, res: Response) {
     const loginData: Login = req.body;
-    console.log(loginData);
     try {
       const serviceResponse = await authService.login(loginData);
       handleServiceResponse(serviceResponse, res);
@@ -51,4 +48,20 @@ export const AuthController = {
       });
     }
   },
+
+  async updateRoleUser(req: Request, res: Response) {
+    const userId = req.params.id;
+    const roleName = req.body.roleName;
+    try {
+      const serviceResponse = await authService.updateRoleUser(userId, roleName);
+      handleServiceResponse(serviceResponse, res);
+    } catch (error) {
+      const errorMessage = `Error updating role user: ${(error as Error).message}`;
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: ResponseStatus.Failed,
+        message: errorMessage,
+        data: null,
+      });
+    }
+  }
 };

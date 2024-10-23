@@ -3,7 +3,8 @@ import { join } from "path";
 import { DataSource } from "typeorm";
 
 import { User } from "../model/user.entity";
-
+import { Role } from "../model/role.entity";
+import { Permission } from "../model/permission.entity";
 config();
 export default new DataSource({
   type: "mysql",
@@ -12,7 +13,7 @@ export default new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [User],
+  entities: [User, Role, Permission],
   migrationsTableName: "migrations",
   migrations: [join(__dirname, "../../src/migrations/**/*.ts")],
   synchronize: false,
