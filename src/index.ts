@@ -23,7 +23,6 @@ async function startApp() {
     logger.error(errorMessage);
   }
 }
-
 startApp();
 
 app.use("/auth", authRouter);
