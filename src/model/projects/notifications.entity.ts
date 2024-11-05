@@ -8,8 +8,8 @@ import {
   ManyToMany,
 } from "typeorm";
 import { DateTimeEntity } from "../base/datetime.entity";
-import { Users } from "../user.entity";
-import { MessageType } from "../base/message.entity";
+import { Users } from "../users.entity";
+import { MessageType } from "../base/messageType.entity";
 @Entity()
 export class Notifications extends DateTimeEntity {
   @PrimaryGeneratedColumn("uuid")

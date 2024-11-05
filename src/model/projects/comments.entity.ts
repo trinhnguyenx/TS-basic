@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { DateTimeEntity } from "../base/datetime.entity";
 import { Cards } from "./cards.entity";
-import { Users } from "../user.entity";
+import { Users } from "../users.entity";
 
 @Entity()
 export class Comments extends DateTimeEntity {

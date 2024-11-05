@@ -1,6 +1,6 @@
-import { User } from "../../model/user.entity";
-import { Role } from "@/model/role.entity";
-import { Permission } from "@/model/permission.entity";
+import { User } from "../../model/users.entity";
+import { Role } from "@/model/roles.entity";
+import { Permission } from "@/model/permissions.entity";
 import dataSource from "../../config/typeorm.config";
 
 export const userRepository = dataSource.getRepository(User).extend({

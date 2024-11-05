@@ -11,7 +11,7 @@ import { DateTimeEntity } from "./base/datetime.entity";
 import { projectMembers } from "./projects/projectMembers.entity";
 import { Comments } from "./projects/comments.entity";
 import { Notifications } from "./projects/notifications.entity";
-import { Roles } from "./role.entity";
+import { Roles } from "./roles.entity";
 
 @Entity()
 export class Users extends DateTimeEntity {

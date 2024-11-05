@@ -2,9 +2,9 @@ import { config } from "dotenv";
 import { join } from "path";
 import { DataSource } from "typeorm";
 
-import { User } from "../model/user.entity";
-import { Role } from "../model/role.entity";
-import { Permission } from "../model/permission.entity";
+import { User } from "../model/users.entity";
+import { Role } from "../model/roles.entity";
+import { Permission } from "../model/permissions.entity";
 config();
 export default new DataSource({
   type: "mysql",

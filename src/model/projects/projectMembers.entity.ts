@@ -8,7 +8,7 @@ import {
   ManyToMany,
 } from "typeorm";
 import { DateTimeEntity } from "../base/datetime.entity";
-import { Users } from "../user.entity";
+import { Users } from "../users.entity";
 import { Projects } from "./projects.entity";
 import { RoleType } from "../base/roleType.entity";
 

@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 
-import { User } from "../../model/user.entity";
+import { User } from "../../model/users.entity";
 import { userRepository } from "../../api/user/userRepository";
 import {
   ServiceResponse,
@@ -138,7 +138,10 @@ export const authService = {
     roleName: string
   ): Promise<ServiceResponse<User | null>> => {
     try {
-      const updatedUser = await userRepository.updateUserRoleAsync(userId, roleName);
+      const updatedUser = await userRepository.updateUserRoleAsync(
+        userId,
+        roleName
+      );
       if (!updatedUser) {
         return new ServiceResponse(
           ResponseStatus.Failed,
