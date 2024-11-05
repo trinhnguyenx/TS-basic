@@ -4,16 +4,16 @@ import {
     ManyToMany,
     PrimaryGeneratedColumn,
   } from 'typeorm';
-  import { Role } from './role.entity';
+  import { Roles } from './role.entity';
   
   @Entity('permissions')
-  export class Permission {
+  export class Permissions {
     @PrimaryGeneratedColumn('uuid')
     id: string;
   
     @Column('varchar')
     action: string;
   
-    @ManyToMany(() => Role, (role) => role.permissions)
-    roles: Role[];
+    @ManyToMany(() => Roles, (role) => role.permissions)
+    roles: Roles[];
   }

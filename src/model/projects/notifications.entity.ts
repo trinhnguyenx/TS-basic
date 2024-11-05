@@ -1,0 +1,32 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  Int32,
+  ManyToMany,
+} from "typeorm";
+import { DateTimeEntity } from "../base/datetime.entity";
+import { Users } from "../user.entity";
+import { MessageType } from "../base/message.entity";
+@Entity()
+export class Notifications extends DateTimeEntity {
+  @PrimaryGeneratedColumn("uuid")
+  public id: string;
+
+  @Column({ type: "varchar", length: 255 })
+  public message: string;
+
+  @Column({ type: "enum", enum: MessageType, default: MessageType.TEXT })
+  public type: MessageType;
+
+  @Column({ type: "json", nullable: true })
+  public data: any;
+
+  @Column({ type: "boolean", default: false })
+  public isRead: boolean;
+
+  @ManyToMany(() => Users, (users) => users.notifications)
+  users: Users[];
+}

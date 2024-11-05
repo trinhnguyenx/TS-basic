@@ -1,19 +1,19 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
-import { User } from './user.entity';
-import { Permission } from './permission.entity';
+import { Users } from './user.entity';
+import { Permissions } from './permission.entity';
 
 @Entity('roles')
-export class Role {
+export class Roles {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('varchar')
   name: string;
 
-  @ManyToMany(() => User, (user) => user.roles)
-  users: User[];
+  @ManyToMany(() => Users, (user) => user.role)
+  users: Users[];
 
-  @ManyToMany(() => Permission, (permission) => permission.roles, { cascade: true })
+  @ManyToMany(() => Permissions, (permission) => permission.roles, { cascade: true })
   @JoinTable()
-  permissions: Permission[];
+  permissions: Permissions[];
 }
