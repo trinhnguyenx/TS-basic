@@ -1,10 +1,10 @@
 import { DataSource } from "typeorm";
-import { Role } from "../model/roles.entity";
-import { Permission } from "../model/permissions.entity";
+import { Roles } from "../model/roles.entity";
+import { Permissions } from "../model/permissions.entity";
 
 export async function seedData(dataSource: DataSource) {
-  const roleRepository = dataSource.getRepository(Role);
-  const permissionRepository = dataSource.getRepository(Permission);
+  const roleRepository = dataSource.getRepository(Roles);
+  const permissionRepository = dataSource.getRepository(Permissions);
 
   const existingRoles = await roleRepository.count();
   if (existingRoles > 0) {

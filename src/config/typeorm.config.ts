@@ -2,9 +2,9 @@ import { config } from "dotenv";
 import { join } from "path";
 import { DataSource } from "typeorm";
 
-import { User } from "../model/users.entity";
-import { Role } from "../model/roles.entity";
-import { Permission } from "../model/permissions.entity";
+import { Users } from "../model/users.entity";
+import { Roles } from "../model/roles.entity";
+import { Permissions } from "../model/permissions.entity";
 config();
 export default new DataSource({
   type: "mysql",
@@ -13,7 +13,7 @@ export default new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [User, Role, Permission],
+  entities: [Users, Roles, Permissions],
   migrationsTableName: "migrations",
   migrations: [join(__dirname, "../../src/migrations/**/*.ts")],
   synchronize: false,

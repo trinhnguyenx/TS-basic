@@ -35,16 +35,25 @@ export const canAccessBy = (requiredPermissions: string[]) => {
       console.log(user)
 
       // Kiểm tra xem user có tồn tại và có roles với permissions không
-      if (!user || !user.roles || !user.roles.some((role: Roles) => role.permissions.length > 0)) {
+      if (!user || !user.role || !user.role.some((role: Roles) => role.permissions.length > 0)) {
         res.status(403).json({ message: 'Forbidden: No permissions found' });
         return;
       }
 
+      // if(!user || !user.role || user.role.permissions.length === 0) {
+      //   res.status(403).json({ message: 'Forbidden: No permissions found' });
+      //   return;
+      // }
+
       // Lấy danh sách các quyền của user từ các vai trò
-      const userPermissions = user.roles.flatMap((role: Roles) =>
+      const userPermissions = user.role.flatMap((role: Roles) =>
         role.permissions.map((permission: Permissions) => permission.action)
       );
-      console.log(user.roles)
+
+      // const userPermissions = user.role.permissions.map((permission: Permissions) => permission.action);
+
+
+      console.log(user.role)
       console.log(userPermissions)
       // Kiểm tra nếu user có ít nhất một quyền trong requiredPermissions
       const hasPermission = requiredPermissions.some(permission => userPermissions.includes(permission));

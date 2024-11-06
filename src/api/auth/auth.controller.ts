@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { authService } from "./auth.service";
-import { User } from "../../model/users.entity";
+import { Users } from "../../model/users.entity";
 import { ResponseStatus } from "../../services/serviceResponse";
 import { Login } from "./auth.interface";
 import { handleServiceResponse } from "../../services/httpHandlerResponse";
 
 export const AuthController = {
   async register(req: Request, res: Response) {
-    const userData: User = req.body;
+    const userData: Users = req.body;
     try {
       const serviceResponse = await authService.register(userData);
       handleServiceResponse(serviceResponse, res);
