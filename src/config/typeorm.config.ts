@@ -5,14 +5,14 @@ import { DataSource } from "typeorm";
 import { Users } from "../model/users.entity";
 import { Roles } from "../model/roles.entity";
 import { Permissions } from "../model/permissions.entity";
-import { Boards } from "@/model/projects/boards.entity";
-import { CardMembers } from "@/model/projects/cardMembers.entity";
-import { Cards } from "@/model/projects/cards.entity";
-import { Comments } from "@/model/projects/comments.entity";
-import { Lists } from "@/model/projects/lists.entity";
-import { Notifications } from "@/model/projects/notifications.entity";
-import { projectMembers } from "@/model/projects/projectMembers.entity";
-import { Projects } from "@/model/projects/projects.entity";
+import { Boards } from "../model/projects/boards.entity";
+import { CardMembers } from "../model/projects/cardMembers.entity";
+import { Cards } from "../model/projects/cards.entity";
+import { Comments } from "../model/projects/comments.entity";
+import { Lists } from "../model/projects/lists.entity";
+import { Notifications } from "../model/projects/notifications.entity";
+import { projectMembers } from "../model/projects/projectMembers.entity";
+import { Projects } from "../model/projects/projects.entity";
 
 config();
 export default new DataSource({
