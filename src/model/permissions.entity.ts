@@ -9,6 +9,6 @@ export class Permissions {
   @Column("varchar")
   action: string;
 
-  @ManyToMany(() => Roles, (role) => role.permissions)
+  @ManyToMany(() => Roles, (role) => role.permissions, { cascade: true })
   roles: Roles[];
 }

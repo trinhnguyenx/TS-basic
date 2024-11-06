@@ -36,7 +36,9 @@ export class Users extends DateTimeEntity {
   @Column({ type: "varchar", length: 255, nullable: true })
   public avatarUrl: string;
 
-  @ManyToMany(() => projectMembers, (projectMembers) => projectMembers.users)
+  @ManyToMany(() => projectMembers, (projectMembers) => projectMembers.users, {
+    cascade: true,
+  })
   projects: projectMembers[];
 
   @OneToMany(() => Comments, (comments) => comments.users)
@@ -45,6 +47,8 @@ export class Users extends DateTimeEntity {
   @OneToMany(() => Notifications, (notifications) => notifications.users)
   notifications: Notifications[];
 
-  @ManyToMany(() => Roles, (role) => role.users)
+  @ManyToMany(() => Roles, (role) => role.users, {
+    cascade: true,
+  })
   role: Roles[];
 }
