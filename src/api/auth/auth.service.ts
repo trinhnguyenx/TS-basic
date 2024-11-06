@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 
-import { User } from "../../model/user.entity";
+import { Users } from "../../model/users.entity";
 import { userRepository } from "../../api/user/userRepository";
 import {
   ServiceResponse,
@@ -13,7 +13,7 @@ import { calculateUnixTime } from "../../services/caculateDatetime";
 
 export const authService = {
   // Register new user
-  register: async (userData: User): Promise<ServiceResponse<User | null>> => {
+  register: async (userData: Users): Promise<ServiceResponse<Users | null>> => {
     try {
       const user = await userRepository.findByEmailAsync(userData.email);
       if (user) {
@@ -38,7 +38,7 @@ export const authService = {
         );
       }
 
-      return new ServiceResponse<User>(
+      return new ServiceResponse<Users>(
         ResponseStatus.Success,
         "User registered successfully!",
         newUser,
@@ -105,7 +105,7 @@ export const authService = {
     }
   },
 
-  getUser: async (userId: string): Promise<ServiceResponse<User | null>> => {
+  getUser: async (userId: string): Promise<ServiceResponse<Users | null>> => {
     try {
       const user = await userRepository.findByIdAsync(userId);
       if (!user) {
@@ -117,7 +117,7 @@ export const authService = {
         );
       }
 
-      return new ServiceResponse<User>(
+      return new ServiceResponse<Users>(
         ResponseStatus.Success,
         "User found",
         user,
@@ -136,9 +136,12 @@ export const authService = {
   updateRoleUser: async (
     userId: string,
     roleName: string
-  ): Promise<ServiceResponse<User | null>> => {
+  ): Promise<ServiceResponse<Users | null>> => {
     try {
-      const updatedUser = await userRepository.updateUserRoleAsync(userId, roleName);
+      const updatedUser = await userRepository.updateUserRoleAsync(
+        userId,
+        roleName
+      );
       if (!updatedUser) {
         return new ServiceResponse(
           ResponseStatus.Failed,
@@ -148,7 +151,7 @@ export const authService = {
         );
       }
 
-      return new ServiceResponse<User>(
+      return new ServiceResponse<Users>(
         ResponseStatus.Success,
         "Role updated successfully",
         updatedUser,
@@ -164,4 +167,55 @@ export const authService = {
       );
     }
   },
+  activateEmail: async (email: string): Promise<ServiceResponse<Users | null>> => {
+    try {
+      const user = await userRepository.findByEmailAsync(email);
+      if (!user) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          "User not found",
+          null,
+          StatusCodes.NOT_FOUND
+        );
+      }
+
+      
+      // const updatedUser = await userRepository.activateEmailAsync(email);
+      // if (!updatedUser) {
+      //   return new ServiceResponse(
+      //     ResponseStatus.Failed,
+      //     "Error activating email",
+      //     null,
+      //     StatusCodes.INTERNAL_SERVER_ERROR
+      //   );
+      // }
+
+      return new ServiceResponse<Users>(
+        ResponseStatus.Success,
+        "Email activated successfully",
+        updatedUser,
+        StatusCodes.OK
+      );
+    } catch (ex) {
+      const errorMessage = `Error activating email: ${(ex as Error).message}`;
+      return new ServiceResponse(
+        ResponseStatus.Failed,
+        errorMessage,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+  // activateEmail: async (email: string): Promise<ServiceResponse<Users | null>> => {
+  // try {
+    
+  // } catch (error) {
+  //   const errorMessage = `Error activating email: ${(error as Error).message}`;
+  //   return new ServiceResponse(
+  //     ResponseStatus.Failed,
+  //     errorMessage,
+  //     null,
+  //     StatusCodes.INTERNAL_SERVER_ERROR
+  //   );
+    
+  // }
+  // },
 };

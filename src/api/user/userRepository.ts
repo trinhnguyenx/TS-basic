@@ -1,34 +1,34 @@
-import { User } from "../../model/user.entity";
-import { Role } from "@/model/role.entity";
-import { Permission } from "@/model/permission.entity";
+import { Users } from "../../model/users.entity";
+import { Roles } from "@/model/roles.entity";
+import { Permissions } from "@/model/permissions.entity";
 import dataSource from "../../config/typeorm.config";
 
-export const userRepository = dataSource.getRepository(User).extend({
-  async findAllAsync(): Promise<User[]> {
+export const userRepository = dataSource.getRepository(Users).extend({
+  async findAllAsync(): Promise<Users[]> {
     return this.find();
   },
 
-  async findByIdAsync(id: string): Promise<User | null> {
+  async findByIdAsync(id: string): Promise<Users | null> {
     return this.findOneBy({ id: id });
   },
 
-  async createUserAsync(userData: Partial<User>): Promise<User> {
-    const roleRepository = dataSource.getRepository(Role);
+  async createUserAsync(userData: Partial<Users>): Promise<Users> {
+    const roleRepository = dataSource.getRepository(Roles);
     const userRole = await roleRepository.findOneBy({ name: "user" });
     if (!userRole) {
-      throw new Error("Role 'user' not found");
+      throw new Error("Roles 'user' not found");
     }
     const newUser = this.create({
       ...userData,
-      roles: [userRole],
+      role: [userRole,]
     });
     return this.save(newUser);
   },
 
   async updateUserAsync(
     id: string,
-    updateData: Partial<User>
-  ): Promise<User | null> {
+    updateData: Partial<Users>
+  ): Promise<Users | null> {
     await this.update(id, updateData);
     return this.findOneBy({ id });
   },
@@ -36,27 +36,27 @@ export const userRepository = dataSource.getRepository(User).extend({
   async updateUserRoleAsync(
     userId: string,
     roleName: string
-  ): Promise<User | null> {
+  ): Promise<Users | null> {
     const user = await this.findOne({
       where: { id: userId },
       relations: ["roles"],
     });
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("Users not found");
     }
-    const roleRepository = dataSource.getRepository(Role);
+    const roleRepository = dataSource.getRepository(Roles);
     const role = await roleRepository.findOneBy({ name: roleName });
     if (!role) {
-      throw new Error(`Role '${roleName}' not found`);
+      throw new Error(`Roles '${roleName}' not found`);
     }
-    user.roles = [role];
+    user.role = [role];
     return this.save(user);
   },
 
-  async findByEmailAsync(email: string | undefined): Promise<User | null> {
+  async findByEmailAsync(email: string | undefined): Promise<Users | null> {
     return this.findOneBy({ email });
   },
-  async findByIdWithRolesAndPermissions(userId: string): Promise<User | null> {
+  async findByIdWithRolesAndPermissions(userId: string): Promise<Users | null> {
     return this.findOne({
       where: { id: userId },
       relations: ["roles", "roles.permissions"],

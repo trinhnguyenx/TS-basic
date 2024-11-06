@@ -1,3 +1,5 @@
+## Every table name have to be PLURAL FORM
+
 ## Customize configuration
 
 See [Vite Configuration Reference](https://vitejs.dev/config/).

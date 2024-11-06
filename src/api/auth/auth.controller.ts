@@ -1,17 +1,19 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { authService } from "./auth.service";
-import { User } from "../../model/user.entity";
+import { Users } from "../../model/users.entity";
 import { ResponseStatus } from "../../services/serviceResponse";
 import { Login } from "./auth.interface";
 import { handleServiceResponse } from "../../services/httpHandlerResponse";
 
 export const AuthController = {
-  async register(req: Request, res: Response){
-    const userData: User = req.body;
+  async register(req: Request, res: Response) {
+    const userData: Users = req.body;
     try {
       const serviceResponse = await authService.register(userData);
       handleServiceResponse(serviceResponse, res);
+
+      const verifyEmail = await authService.activateEmail(userData.email);
     } catch (error) {
       const errorMessage = `Error creating user: ${(error as Error).message}`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -53,15 +55,37 @@ export const AuthController = {
     const userId = req.params.id;
     const roleName = req.body.roleName;
     try {
-      const serviceResponse = await authService.updateRoleUser(userId, roleName);
+      const serviceResponse = await authService.updateRoleUser(
+        userId,
+        roleName
+      );
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error updating role user: ${(error as Error).message}`;
+      const errorMessage = `Error updating role user: ${
+        (error as Error).message
+      }`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: ResponseStatus.Failed,
         message: errorMessage,
         data: null,
       });
     }
-  }
+  },
+
+  // async activateEmail(req: Request, res: Response) {
+  //   const email = req.body.email;
+  //   try {
+  //     const serviceResponse = await authService.activateEmail(email);
+  //     handleServiceResponse(serviceResponse, res);
+  //   } catch (error) {
+  //     const errorMessage = `Error activating email: ${
+  //       (error as Error).message
+  //     }`;
+  //     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  //       status: ResponseStatus.Failed,
+  //       message: errorMessage,
+  //       data: null,
+  //     });
+  //   }
+  // },
 };
