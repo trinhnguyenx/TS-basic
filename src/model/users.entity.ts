@@ -36,6 +36,18 @@ export class Users extends DateTimeEntity {
   @Column({ type: "varchar", length: 255, nullable: true })
   public avatarUrl: string;
 
+  @Column({ type: "varchar", length: 255, nullable: true })
+  public accessToken: string;
+
+  @Column({ type: "datetime", nullable: true })
+  public accessTokenExpiresAt: Date;
+
+  @Column({ type: "varchar", length: 255, nullable: true })
+  public resetToken: string;
+
+  @Column({ type: "datetime", nullable: true })
+  public resetTokenExpiresAt: Date;
+
   @ManyToMany(() => projectMembers, (projectMembers) => projectMembers.users, {
     cascade: true,
   })
