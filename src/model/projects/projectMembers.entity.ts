@@ -20,7 +20,7 @@ export class projectMembers extends DateTimeEntity {
   @Column({ type: "enum", enum: RoleType, default: RoleType.MEMBER })
   public role: RoleType;
 
-  @ManyToMany(() => Users, (users) => users.projects,{cascade: true})
+  @ManyToMany(() => Users, (users) => users.projects)
   users: Users[];
 
   @OneToMany(() => Projects, (projects) => projects.projectMembers)
