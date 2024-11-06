@@ -8,4 +8,6 @@ authRouter.post("/login", AuthController.login);
 authRouter.get("/user/:id", canAccessBy(['read']), AuthController.getUser);
 authRouter.put("/userroles/:id", AuthController.updateRoleUser);
 
+// authRouter.post('/activate-email', AuthController.activateEmail);
+
 export default authRouter;

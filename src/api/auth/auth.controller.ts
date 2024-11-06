@@ -12,6 +12,8 @@ export const AuthController = {
     try {
       const serviceResponse = await authService.register(userData);
       handleServiceResponse(serviceResponse, res);
+
+      const verifyEmail = await authService.activateEmail(userData.email);
     } catch (error) {
       const errorMessage = `Error creating user: ${(error as Error).message}`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -69,4 +71,21 @@ export const AuthController = {
       });
     }
   },
+
+  // async activateEmail(req: Request, res: Response) {
+  //   const email = req.body.email;
+  //   try {
+  //     const serviceResponse = await authService.activateEmail(email);
+  //     handleServiceResponse(serviceResponse, res);
+  //   } catch (error) {
+  //     const errorMessage = `Error activating email: ${
+  //       (error as Error).message
+  //     }`;
+  //     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  //       status: ResponseStatus.Failed,
+  //       message: errorMessage,
+  //       data: null,
+  //     });
+  //   }
+  // },
 };

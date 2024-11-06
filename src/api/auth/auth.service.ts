@@ -167,4 +167,55 @@ export const authService = {
       );
     }
   },
+  activateEmail: async (email: string): Promise<ServiceResponse<Users | null>> => {
+    try {
+      const user = await userRepository.findByEmailAsync(email);
+      if (!user) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          "User not found",
+          null,
+          StatusCodes.NOT_FOUND
+        );
+      }
+
+      
+      // const updatedUser = await userRepository.activateEmailAsync(email);
+      // if (!updatedUser) {
+      //   return new ServiceResponse(
+      //     ResponseStatus.Failed,
+      //     "Error activating email",
+      //     null,
+      //     StatusCodes.INTERNAL_SERVER_ERROR
+      //   );
+      // }
+
+      return new ServiceResponse<Users>(
+        ResponseStatus.Success,
+        "Email activated successfully",
+        updatedUser,
+        StatusCodes.OK
+      );
+    } catch (ex) {
+      const errorMessage = `Error activating email: ${(ex as Error).message}`;
+      return new ServiceResponse(
+        ResponseStatus.Failed,
+        errorMessage,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+  // activateEmail: async (email: string): Promise<ServiceResponse<Users | null>> => {
+  // try {
+    
+  // } catch (error) {
+  //   const errorMessage = `Error activating email: ${(error as Error).message}`;
+  //   return new ServiceResponse(
+  //     ResponseStatus.Failed,
+  //     errorMessage,
+  //     null,
+  //     StatusCodes.INTERNAL_SERVER_ERROR
+  //   );
+    
+  // }
+  // },
 };
