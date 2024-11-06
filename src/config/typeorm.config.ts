@@ -14,14 +14,6 @@ import { Notifications } from "../model/projects/notifications.entity";
 import { projectMembers } from "../model/projects/projectMembers.entity";
 import { Projects } from "../model/projects/projects.entity";
 
-
-
-
-
-
-
-
-
 config();
 export default new DataSource({
   type: "mysql",
