@@ -22,9 +22,12 @@ export class Lists extends DateTimeEntity {
   @Column({ type: "int", default: 0 })
   public position: Int32;
 
-  @OneToMany(() => Cards, (cards) => cards.list)
+  @Column({ type: "boolean", default: false })
+  public is_archive: boolean;
+
+  @OneToMany(() => Cards, (cards) => cards.listID)
   public cards: Cards[];
 
   @ManyToOne(() => Boards, (boards) => boards.lists)
-  public boards: Boards;
+  public boardID: Boards;
 }

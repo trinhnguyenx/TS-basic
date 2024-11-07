@@ -38,12 +38,15 @@ export class Cards extends DateTimeEntity {
   @Column({ type: "datetime", nullable: true })
   public dueDate: Date;
 
-  @OneToMany(() => Comments, (comments) => comments.cards)
-  comments: Comments[];
+  @Column({ type:"boolean", default: false })
+  public is_archive: boolean;
 
-  @ManyToOne(() => CardMembers, (cardMembers) => cardMembers.cards)
-  cardMembers: CardMembers;
+  @OneToMany(() => Comments, (comments) => comments.cardID)
+  public comments: Comments[];
+
+  @OneToMany(() => CardMembers, (cardMembers) => cardMembers.cardID)
+  public cardMembers: CardMembers[];
 
   @ManyToOne(() => Lists, (lists) => lists.cards)
-  public list: Lists;
+  public listID: Lists;
 }

@@ -10,6 +10,8 @@ import { StatusCodes } from "http-status-codes";
 import { generateJwt } from "../../services/jwtService";
 import { Login, Token } from "../auth/auth.interface";
 import { calculateUnixTime } from "../../services/caculateDatetime";
+import mailService from "../../services/sendEmail";
+import { verify } from "crypto";
 
 export const authService = {
   // Register new user
@@ -167,7 +169,7 @@ export const authService = {
       );
     }
   },
-  activateEmail: async (email: string): Promise<ServiceResponse<Users | null>> => {
+  verifyEmail: async (email: string): Promise<ServiceResponse<string| null>> => {
     try {
       const user = await userRepository.findByEmailAsync(email);
       if (!user) {
@@ -179,21 +181,25 @@ export const authService = {
         );
       }
 
-      
-      // const updatedUser = await userRepository.activateEmailAsync(email);
-      // if (!updatedUser) {
-      //   return new ServiceResponse(
-      //     ResponseStatus.Failed,
-      //     "Error activating email",
-      //     null,
-      //     StatusCodes.INTERNAL_SERVER_ERROR
-      //   );
-      // }
+      const verifyEmailToken = generateJwt({ email });
 
-      return new ServiceResponse<Users>(
+      const verifyUrl = `http://localhost:3000/activate?token=${verifyEmailToken}`;
+
+      const mailIsSent = await mailService.sendEmail({
+          emailFrom: "TrelloSGroupProject@gmail.com",
+          emailTo: email,
+          emailSubject: "Verify email",
+          emailText: `Click on the button below to verify your email: <a href="${verifyUrl}">Verify</a>`,
+        });
+
+
+      
+      
+
+      return new ServiceResponse<string>(
         ResponseStatus.Success,
         "Email activated successfully",
-        updatedUser,
+        email,
         StatusCodes.OK
       );
     } catch (ex) {
@@ -204,18 +210,5 @@ export const authService = {
         null,
         StatusCodes.INTERNAL_SERVER_ERROR
       );
-  // activateEmail: async (email: string): Promise<ServiceResponse<Users | null>> => {
-  // try {
-    
-  // } catch (error) {
-  //   const errorMessage = `Error activating email: ${(error as Error).message}`;
-  //   return new ServiceResponse(
-  //     ResponseStatus.Failed,
-  //     errorMessage,
-  //     null,
-  //     StatusCodes.INTERNAL_SERVER_ERROR
-  //   );
-    
-  // }
-  // },
+    }}
 };

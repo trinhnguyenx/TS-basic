@@ -20,9 +20,9 @@ export class projectMembers extends DateTimeEntity {
   @Column({ type: "enum", enum: RoleType, default: RoleType.MEMBER })
   public role: RoleType;
 
-  @ManyToMany(() => Users, (users) => users.projects)
-  users: Users[];
+  @ManyToOne(() => Users, (users) => users.projectMembers)
+  userID: Users;
 
-  @OneToMany(() => Projects, (projects) => projects.projectMembers)
-  projects: Projects[];
+  @ManyToOne(() => Projects, (projects) => projects.projectMembers)
+  projectID: Projects;
 }

@@ -12,6 +12,8 @@ import { projectMembers } from "./projects/projectMembers.entity";
 import { Comments } from "./projects/comments.entity";
 import { Notifications } from "./projects/notifications.entity";
 import { Roles } from "./roles.entity";
+import { BoardMembers } from "./projects/boardMembers.entity";
+import { CardMembers } from "./projects/cardMembers.entity";
 
 @Entity()
 export class Users extends DateTimeEntity {
@@ -48,19 +50,25 @@ export class Users extends DateTimeEntity {
   @Column({ type: "datetime", nullable: true })
   public resetTokenExpiresAt: Date;
 
-  @ManyToMany(() => projectMembers, (projectMembers) => projectMembers.users, {
+  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.userID, {
     cascade: true,
   })
-  projects: projectMembers[];
+  projectMembers: projectMembers[];
 
-  @OneToMany(() => Comments, (comments) => comments.users)
+  @OneToMany(() => Comments, (comments) => comments.userID)
   comments: Comments[];
 
-  @OneToMany(() => Notifications, (notifications) => notifications.users)
+  @OneToMany(() => Notifications, (notifications) => notifications.userID)
   notifications: Notifications[];
 
   @ManyToMany(() => Roles, (role) => role.users, {
     cascade: true,
   })
   role: Roles[];
+
+  @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.userID)
+  boardMembers: BoardMembers;
+
+  @ManyToOne(() => CardMembers, (cardMembers) => cardMembers.userID)
+  cardMembers: CardMembers;
 }
