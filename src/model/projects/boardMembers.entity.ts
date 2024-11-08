@@ -18,8 +18,6 @@ export class BoardMembers extends DateTimeEntity {
   @PrimaryGeneratedColumn("uuid")
   public id: string;
 
-  
-
   @OneToMany(() => Users, (users) => users.boardMembers)
     userID: Users[];
   

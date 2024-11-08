@@ -11,15 +11,15 @@ export const AuthController = {
     const userData: Users = req.body;
     try {
       const serviceResponse = await authService.register(userData);
-      if (!serviceResponse.success) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          status: serviceResponse.success,
-          message: serviceResponse.message,
-          data: serviceResponse.data,
-        });
-      }
-      const verifyEmail = await authService.verifyEmail(userData.email);
-      console.log(serviceResponse);
+      // if (!serviceResponse.success) {
+      //   return res.status(StatusCodes.BAD_REQUEST).json({
+      //     status: serviceResponse.success,
+      //     message: serviceResponse.message,
+      //     data: serviceResponse.data,
+      //   });
+      // }
+      // const verifyEmail = await authService.verifyEmail(userData.email);
+      // console.log(serviceResponse);
       
       handleServiceResponse(serviceResponse, res);
 
