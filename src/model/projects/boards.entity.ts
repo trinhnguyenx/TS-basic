@@ -10,6 +10,7 @@ import {
 import { DateTimeEntity } from "../base/datetime.entity";
 import { Projects } from "./projects.entity";
 import { Lists } from "./lists.entity";
+import { BoardMembers } from "./boardMembers.entity";
 
 @Entity()
 export class Boards extends DateTimeEntity {
@@ -25,9 +26,18 @@ export class Boards extends DateTimeEntity {
   @Column({ type: "varchar", length: 255, nullable: true })
   public coverUrl: string;
 
-  @OneToMany(() => Lists, (lists) => lists.boards)
+  @Column({ type: "varchar", length: 255, nullable: true })
+  public assigned: string;
+
+  @Column({ type: "boolean", default: false })
+  public is_archive: boolean;
+
+  @OneToMany(() => Lists, (lists) => lists.boardID)
   lists: Lists[];
 
   @ManyToOne(() => Projects, (projects) => projects.boards)
-  projects: Projects;
+  projectID: Projects;
+
+  @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.boardID)
+  boardMembers: BoardMembers;
 }

@@ -23,12 +23,15 @@ export class Projects extends DateTimeEntity {
   @Column({ type: "varchar", length: 255 })
   public description: string;
 
-  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.projects)
+  @Column({ type: "varchar", length: 255, nullable: true })
+  public assigned: string;
+
+  @Column({ type: "boolean", default: false })
+  public is_archive: boolean;
+
+  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.projectID)
   projectMembers: projectMembers[];
 
-  @OneToMany(() => CardMembers, (cardMembers) => cardMembers.projects)
-  cardMembers: CardMembers[];
-
-  @OneToMany(() => Boards, (boards) => boards.projects)
+  @OneToMany(() => Boards, (boards) => boards.projectID)
   boards: Boards[];
 }

@@ -10,6 +10,8 @@ import { StatusCodes } from "http-status-codes";
 import { generateJwt } from "../../services/jwtService";
 import { Login, Token } from "../auth/auth.interface";
 import { calculateUnixTime } from "../../services/caculateDatetime";
+import mailService from "../../services/sendEmail";
+import { verify } from "crypto";
 
 export const authService = {
   // Register new user
@@ -38,9 +40,20 @@ export const authService = {
         );
       }
 
+      const verifyEmail = await authService.verifyEmail(userData.email);
+
+      if (!verifyEmail) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          "Error sending email",
+          null,
+          StatusCodes.INTERNAL_SERVER_ERROR
+        );
+      }
+
       return new ServiceResponse<Users>(
         ResponseStatus.Success,
-        "User registered successfully!",
+        "User registered successfully! Please check your email to verify your account",
         newUser,
         StatusCodes.CREATED
       );
@@ -167,55 +180,48 @@ export const authService = {
       );
     }
   },
-  activateEmail: async (email: string): Promise<ServiceResponse<Users | null>> => {
+  verifyEmail: async (email: string): Promise<boolean> => {
     try {
-      const user = await userRepository.findByEmailAsync(email);
-      if (!user) {
-        return new ServiceResponse(
-          ResponseStatus.Failed,
-          "User not found",
-          null,
-          StatusCodes.NOT_FOUND
-        );
-      }
-
-      
-      // const updatedUser = await userRepository.activateEmailAsync(email);
-      // if (!updatedUser) {
+      // const user = await userRepository.findByEmailAsync(email);
+      // if (!user) {
       //   return new ServiceResponse(
       //     ResponseStatus.Failed,
-      //     "Error activating email",
+      //     "User not found",
       //     null,
-      //     StatusCodes.INTERNAL_SERVER_ERROR
+      //     StatusCodes.NOT_FOUND
       //   );
       // }
 
-      return new ServiceResponse<Users>(
-        ResponseStatus.Success,
-        "Email activated successfully",
-        updatedUser,
-        StatusCodes.OK
-      );
+      const verifyEmailToken = generateJwt({ email });
+
+      const verifyUrl = `http://localhost:3000/activate?token=${verifyEmailToken}`;
+
+      const mailIsSent = await mailService.sendEmail({
+          emailFrom: "TrelloSGroupProject@gmail.com",
+          emailTo: email,
+          emailSubject: "Verify email",
+          emailText: `Click on the button below to verify your email: <a href="${verifyUrl}">Verify</a>`,
+        });
+     
+        if(!mailIsSent){
+          return false;
+        }
+
+      // return new ServiceResponse<string>(
+      //   ResponseStatus.Success,
+      //   "Email activated successfully",
+      //   email,
+      //   StatusCodes.OK
+      // );
+      return true;
     } catch (ex) {
       const errorMessage = `Error activating email: ${(ex as Error).message}`;
-      return new ServiceResponse(
-        ResponseStatus.Failed,
-        errorMessage,
-        null,
-        StatusCodes.INTERNAL_SERVER_ERROR
-      );
-  // activateEmail: async (email: string): Promise<ServiceResponse<Users | null>> => {
-  // try {
-    
-  // } catch (error) {
-  //   const errorMessage = `Error activating email: ${(error as Error).message}`;
-  //   return new ServiceResponse(
-  //     ResponseStatus.Failed,
-  //     errorMessage,
-  //     null,
-  //     StatusCodes.INTERNAL_SERVER_ERROR
-  //   );
-    
-  // }
-  // },
+      // return new ServiceResponse(
+      //   ResponseStatus.Failed,
+      //   errorMessage,
+      //   null,
+      //   StatusCodes.INTERNAL_SERVER_ERROR
+      // );
+      return false;
+    }}
 };
