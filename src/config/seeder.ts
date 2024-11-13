@@ -50,7 +50,7 @@ export async function seedData(dataSource: DataSource) {
     {
       name: "admin1",
       password: "password1",
-      email: "email01@gmail.com",
+      email: "emailadmin01@gmail.com",
       bio: "this is bio of admin 01",
       roles: [roles[1]],
     },

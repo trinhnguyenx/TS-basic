@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-
+import { Int32 } from "typeorm";
 import { Users } from "../../model/users.entity";
 import { userRepository } from "../../api/user/userRepository";
 import {
@@ -7,11 +7,12 @@ import {
   ResponseStatus,
 } from "../../services/serviceResponse";
 import { StatusCodes } from "http-status-codes";
-import { generateJwt } from "../../services/jwtService";
+import { generateJwt, verifyJwt } from "../../services/jwtService";
 import { Login, Token } from "../auth/auth.interface";
 import { calculateUnixTime } from "../../services/caculateDatetime";
 import mailService from "../../services/sendEmail";
 import { verify } from "crypto";
+import { log } from "console";
 
 export const authService = {
   // Register new user
@@ -39,6 +40,7 @@ export const authService = {
           StatusCodes.INTERNAL_SERVER_ERROR
         );
       }
+      console.log("user created");
 
       const verifyEmail = await authService.verifyEmail(userData.email);
 
@@ -117,6 +119,63 @@ export const authService = {
       );
     }
   },
+  activateEmail: async (token: string): Promise<ServiceResponse<string|null>> => {
+    try {
+      const decodedToken = verifyJwt(token);
+      if (!decodedToken) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          "Invalid token",
+          null,
+          StatusCodes.UNAUTHORIZED
+        );
+      }
+      const email = (decodedToken as any).email;
+      const user = await userRepository.findByEmailAsync(email);
+      if (!user) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          "User not found",
+          null,
+          StatusCodes.NOT_FOUND
+        );
+      }
+      if (user.isActivated === 1) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          "Email already activated",
+          null,
+          StatusCodes.BAD_REQUEST
+        );
+      }
+      const updatedUser = await userRepository.updateUserAsync(user.id, {
+        ...user,
+        isActivated: 1 ,
+      });
+      if (!updatedUser) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          "Error updating user",
+          null,
+          StatusCodes.INTERNAL_SERVER_ERROR
+        );
+      }
+      return new ServiceResponse<string>(
+        ResponseStatus.Success,
+        "Email activated successfully",
+        email,
+        StatusCodes.OK
+      );
+    } catch (ex) {
+      const errorMessage = `Error activating email: ${(ex as Error).message}`;
+      return new ServiceResponse(
+        ResponseStatus.Failed,
+        errorMessage,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  },
 
   getUser: async (userId: string): Promise<ServiceResponse<Users | null>> => {
     try {
@@ -182,26 +241,25 @@ export const authService = {
   },
   verifyEmail: async (email: string): Promise<boolean> => {
     try {
-      // const user = await userRepository.findByEmailAsync(email);
-      // if (!user) {
-      //   return new ServiceResponse(
-      //     ResponseStatus.Failed,
-      //     "User not found",
-      //     null,
-      //     StatusCodes.NOT_FOUND
-      //   );
-      // }
+      const user = await userRepository.findByEmailAsync(email);
+      if (!user) {
+        return false;
+      }
 
       const verifyEmailToken = generateJwt({ email });
+      console.log("verifyEmailToken generated");
+      
 
-      const verifyUrl = `http://localhost:3000/activate?token=${verifyEmailToken}`;
-
+      const verifyUrl = `http://localhost:3000/auth/activate?token=${verifyEmailToken}`;
+      console.log("verifyUrl generated, start send email");
       const mailIsSent = await mailService.sendEmail({
           emailFrom: "TrelloSGroupProject@gmail.com",
           emailTo: email,
           emailSubject: "Verify email",
           emailText: `Click on the button below to verify your email: <a href="${verifyUrl}">Verify</a>`,
         });
+
+        console.log("mailIsSent", mailIsSent);
      
         if(!mailIsSent){
           return false;

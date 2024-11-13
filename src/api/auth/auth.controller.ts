@@ -20,10 +20,8 @@ export const AuthController = {
       // }
       // const verifyEmail = await authService.verifyEmail(userData.email);
       // console.log(serviceResponse);
-      
-      handleServiceResponse(serviceResponse, res);
 
-      
+      handleServiceResponse(serviceResponse, res);
     } catch (error) {
       const errorMessage = `Error creating user: ${(error as Error).message}`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -59,6 +57,24 @@ export const AuthController = {
         data: null,
       });
     }
+  },
+  async activateEmail(req: Request, res: Response) {
+    
+    try {
+      const token = req.query.token as string; //get token from url query
+      const serviceResponse = await authService.activateEmail(token);
+      handleServiceResponse(serviceResponse, res);
+    } catch (error) {
+      const errorMessage = `Error activating email: ${
+        (error as Error).message
+      }`;
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: ResponseStatus.Failed,
+        message: errorMessage,
+        data: null,
+      });
+    }
+    
   },
 
   async updateRoleUser(req: Request, res: Response) {
