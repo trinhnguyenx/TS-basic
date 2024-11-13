@@ -145,7 +145,7 @@ export const authService = {
           ResponseStatus.Failed,
           "Email already activated",
           null,
-          StatusCodes.BAD_REQUEST
+          StatusCodes.CONFLICT
         );
       }
       const updatedUser = await userRepository.updateUserAsync(user.id, {
