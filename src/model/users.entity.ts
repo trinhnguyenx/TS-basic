@@ -5,6 +5,7 @@ import {
   OneToMany,
   ManyToOne,
   ManyToMany,
+  JoinTable,
   Int32,
 } from "typeorm";
 import { DateTimeEntity } from "./base/datetime.entity";
@@ -33,7 +34,7 @@ export class Users extends DateTimeEntity {
   public bio: string;
 
   @Column({ type: "int", default: 0 })
-  public isActivated: Int32;
+  public isActivated: number;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   public avatarUrl: string;
@@ -64,6 +65,7 @@ export class Users extends DateTimeEntity {
   @ManyToMany(() => Roles, (role) => role.users, {
     cascade: true,
   })
+  @JoinTable()
   role: Roles[];
 
   @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.userID)
