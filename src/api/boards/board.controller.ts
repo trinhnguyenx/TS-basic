@@ -1,30 +1,32 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { projectService } from "./project.service";
+import { boardService } from "./board.service";
 import { Users } from "../../model/users.entity";
 import { ResponseStatus } from "../../services/serviceResponse";
 import { Profile, decoded } from "../user/user.interface";
-import { Projects } from "../../model/projects/projects.entity";
+import { Boards } from "../../model/projects/boards.entity";
 import { AuthenticatedRequest } from "../auth/auth.interface";
 import { handleServiceResponse } from "../../services/httpHandlerResponse";
 
-export const ProjectController = {
-  async createProject(req: AuthenticatedRequest, res: Response) {
+export const BoardController = {
+  async createBoard(req: AuthenticatedRequest, res: Response) {
     try {
-      const projectData = req.body;
-      
+      const boardData = {...req.body, projectId: req.params.projectId};
+      const projectId = req.params.projectId;
+
       if (!req.user) {
         throw "Unauthorized";
       }
-      const serviceResponse = await projectService.createProject(
+      const serviceResponse = await boardService.createBoard(
         (req.user as decoded).userId,
-        projectData
+        projectId,
+        boardData
       );
       console.log("finish serviceResponse at controller");
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error update user profile: ${
+      const errorMessage = `Error create board: ${
         (error as Error).message
       }`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -34,26 +36,26 @@ export const ProjectController = {
       });
     }
   },
-  async updateProject(req: AuthenticatedRequest, res: Response) {
+  async updateBoard(req: AuthenticatedRequest, res: Response) {
     try {
-      const projectData = req.body;
-      const projectId = req.params.projectId;
+      const boardData = req.body;
+      const boardId = req.params.boardId;
 
       if (!req.user) {
         throw "Unauthorized";
       }
       const userId = (req.user as decoded).userId;
 
-      const serviceResponse = await projectService.updateProject(
+      const serviceResponse = await boardService.updateBoard(
         (req.user as decoded).userId,
-        projectId,
-        projectData
+        boardId,
+        boardData
       );
       console.log("finish serviceResponse at controller");
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error update project data: ${
+      const errorMessage = `Error update board data: ${
         (error as Error).message
       }`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -63,26 +65,26 @@ export const ProjectController = {
       });
     }
   },
-  async archiveProject(req: AuthenticatedRequest, res: Response) {
+  async archiveBoard(req: AuthenticatedRequest, res: Response) {
     try {
       const isArchive = true;
-      const projectId = req.params.projectId;
+      const boardId = req.params.boardId;
 
       if (!req.user) {
         throw "Unauthorized";
       }
       const userId = (req.user as decoded).userId;
 
-      const serviceResponse = await projectService.archiveProject(
+      const serviceResponse = await boardService.archiveBoard(
         (req.user as decoded).userId,
-        projectId,
+        boardId,
         isArchive
       );
       console.log("finish serviceResponse at controller");
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error archive project: ${
+      const errorMessage = `Error archive board: ${
         (error as Error).message
       }`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

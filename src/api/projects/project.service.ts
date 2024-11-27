@@ -52,21 +52,60 @@ export const projectService = {
   ): Promise<ServiceResponse<Projects | null>> {
     try {
       console.log("projectData:", projectData);
-      console.log("userid: ", userId);
+      console.log("userId: ", userId);
 
-      const project = await projectRepository.createProjectAsync(
-        userId,
+      const updatedProject = await projectRepository.updateProjectAsync(
+        projectId,
         projectData
       );
-      console.log("finish create project at service ");
+
+      console.log("finish update project at service ");
+      if (!updatedProject) {
+        throw new Error("Project not found");
+      }
       return new ServiceResponse<Projects>(
         ResponseStatus.Success,
-        "Project created successfully",
-        project,
+        "Project updated successfully",
+        updatedProject,
         StatusCodes.CREATED
       );
     } catch (ex) {
-      const errorMessage = `Error creating project: ${(ex as Error).message}`;
+      const errorMessage = `Error updating project: ${(ex as Error).message}`;
+      return new ServiceResponse(
+        ResponseStatus.Failed,
+        errorMessage,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  },
+  async archiveProject(
+    userId: string, projectId: string,
+    archive: boolean
+  ): Promise<ServiceResponse<Projects | null>> {
+    try {
+      const projectData = {is_archive: archive};
+      console.log("projectData:", projectData);
+      console.log("userId: ", userId);
+
+
+      const updatedProject = await projectRepository.updateProjectAsync(
+        projectId,
+        projectData
+      );
+
+      console.log("finish archive project at service ");
+      if (!updatedProject) {
+        throw new Error("Project not found");
+      }
+      return new ServiceResponse<Projects>(
+        ResponseStatus.Success,
+        "Project archived successfully",
+        updatedProject,
+        StatusCodes.CREATED
+      );
+    } catch (ex) {
+      const errorMessage = `Error archiving project: ${(ex as Error).message}`;
       return new ServiceResponse(
         ResponseStatus.Failed,
         errorMessage,

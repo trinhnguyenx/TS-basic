@@ -18,10 +18,10 @@ export class BoardMembers extends DateTimeEntity {
   @PrimaryGeneratedColumn("uuid")
   public id: string;
 
-  @OneToMany(() => Users, (users) => users.boardMembers)
-    user: Users[];
+  @ManyToOne(() => Users, (users) => users.boardMembers)
+    user: Users;
   
-    @OneToMany(() => Boards, (boards) => boards.boardMembers)
-    board: Boards[];
+    @ManyToOne(() => Boards, (boards) => boards.boardMembers)
+    board: Boards;
   
 }
