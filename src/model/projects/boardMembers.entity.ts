@@ -19,9 +19,9 @@ export class BoardMembers extends DateTimeEntity {
   public id: string;
 
   @OneToMany(() => Users, (users) => users.boardMembers)
-    userID: Users[];
+    user: Users[];
   
     @OneToMany(() => Boards, (boards) => boards.boardMembers)
-    boardID: Boards[];
+    board: Boards[];
   
 }

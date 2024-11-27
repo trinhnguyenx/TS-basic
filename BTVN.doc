@@ -1,0 +1,21 @@
+* 16/10/2024
+- cache Permission, user, usedID
+
+
+- 1 số vấn đề giữa cache với database:
+
+2/notice
+- Cac bien .env thi tao rieng 1 file trong config, file nao can thi import 
+- Van de lo resetPass khi gui qua Url (solution, vi lau vcl)
+
+3/ To-do 
+- update userData
+- Project Api
+- lam rieng flow update anh va update thong tin
+
+
+
+
+
+
+

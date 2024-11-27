@@ -21,6 +21,8 @@ interface Permissions {
 export const canAccessBy = (requiredPermissions: string[]) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const authHeader = req.headers['authorization'];
+    console.log("authHeader: ",authHeader);
+    
 
     if (!authHeader) {
       res.status(401).json({ message: 'Unauthorized: No token provided' });

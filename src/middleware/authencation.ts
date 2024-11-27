@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { verifyJwt } from '../services/jwtService';
+import { AuthenticatedRequest } from '../api/auth/auth.interface';
 
-interface AuthenticatedRequest extends Request {
-  user?: string | object;
-}
+// interface AuthenticatedRequest extends Request {
+//   user?: string | object;
+// }
 
 const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -17,7 +18,9 @@ const authenticateJWT = (req: AuthenticatedRequest, res: Response, next: NextFun
       res.sendStatus(401);
       return;
     }
-    req.user = decoded;
+    req.user = decoded; //decode:{userId, iat, exp}
+    
+    
     next();
   } else {
     res.sendStatus(401);

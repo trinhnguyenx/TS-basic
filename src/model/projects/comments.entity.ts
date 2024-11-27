@@ -20,8 +20,8 @@ export class Comments extends DateTimeEntity {
   public content: string;
 
   @ManyToOne(() => Users, (users) => users.comments)
-  userID: Users;
+  user: Users;
 
   @ManyToOne(() => Cards, (cards) => cards.comments)
-  cardID: Cards;
+  card: Cards;
 }

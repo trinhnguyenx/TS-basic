@@ -1,13 +1,15 @@
 import { Router } from "express";
 import { AuthController } from "../auth/auth.controller";
 import { canAccessBy } from "../../middleware/checkpermission";
+import authenticateJWT from "../../middleware/authencation";
 const authRouter = Router();
 
 authRouter.post("/register", AuthController.register);
-authRouter.post("/login", AuthController.login);
+authRouter.post("/login", AuthController.login); //check isActivate
 authRouter.get("/activate", AuthController.activateEmail);
-authRouter.get("/user/:id", canAccessBy(['read']), AuthController.getUser);
-authRouter.put("/userroles/:id", AuthController.updateRoleUser);
+authRouter.get("/user/:id",authenticateJWT, AuthController.getUser); //lay cua chinh minh thi ko /:id
+
+// authRouter.put("/userroles/:id", AuthController.updateRoleUser);
 
 // authRouter.post('/activate-email', AuthController.activateEmail);
 

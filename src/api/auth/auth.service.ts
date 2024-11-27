@@ -7,6 +7,9 @@ import {
   ResponseStatus,
 } from "../../services/serviceResponse";
 import { StatusCodes } from "http-status-codes";
+
+import cacheService from "../../services/cacheService";
+// import { cache } from "../../services/cacheService";
 import { generateJwt, verifyJwt } from "../../services/jwtService";
 import { Login, Token } from "../auth/auth.interface";
 import { calculateUnixTime } from "../../services/caculateDatetime";
@@ -99,7 +102,7 @@ export const authService = {
       const token: Token = {
         accessToken: generateJwt({ userId: user.id }),
         refreshToken: generateJwt({ userId: user.id }),
-        expiresIn: calculateUnixTime(process.env.JWT_EXPIRES_IN || "1h"),
+        // expiresIn: calculateUnixTime(process.env.JWT_EXPIRES_IN || "1h"),
         tokenType: "Bearer",
       };
 
@@ -179,6 +182,28 @@ export const authService = {
 
   getUser: async (userId: string): Promise<ServiceResponse<Users | null>> => {
     try {
+      const checkUserInCache = await cacheService.get("userId", userId);
+
+      if (checkUserInCache) {
+        return new ServiceResponse<Users>(
+          ResponseStatus.Success,
+          "User found in cache - Cache hit",
+          checkUserInCache,
+          StatusCodes.OK
+        );
+      }
+      //// Check user in cache
+      // console.log("user:", userId);
+      // const checkUserInCache = (await cache.get(`userId:${userId}`)) as Users;
+      // if (checkUserInCache) {
+      //   return new ServiceResponse<Users>(
+      //     ResponseStatus.Success,
+      //     "User found in cache - Cache hit",
+      //     checkUserInCache,
+      //     StatusCodes.OK
+      //   );
+      // }
+
       const user = await userRepository.findByIdAsync(userId);
       if (!user) {
         return new ServiceResponse(
@@ -189,9 +214,13 @@ export const authService = {
         );
       }
 
+      //// Save user in cache
+      // const savedUser = await cache.set(`userId:${userId}`, user);
+      cacheService.set("userId", userId, user);
+
       return new ServiceResponse<Users>(
         ResponseStatus.Success,
-        "User found",
+        "User found in database - cache miss",
         user,
         StatusCodes.OK
       );

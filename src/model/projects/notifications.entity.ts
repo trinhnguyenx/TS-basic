@@ -28,5 +28,5 @@ export class Notifications extends DateTimeEntity {
   public isRead: boolean;
 
   @ManyToOne(() => Users, (users) => users.notifications, { cascade: true })
-  userID: Users;
+  user: Users;
 }

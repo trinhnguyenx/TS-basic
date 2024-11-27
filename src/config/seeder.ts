@@ -49,15 +49,15 @@ export async function seedData(dataSource: DataSource) {
   const admins = [
     {
       name: "admin1",
-      password: "password1",
+      password: "passwordadmin1",
       email: "emailadmin01@gmail.com",
       bio: "this is bio of admin 01",
       roles: [roles[1]],
     },
     {
       name: "admin2",
-      password: "password2",
-      email: "email02@gmail.com",
+      password: "passwordadmin2",
+      email: "emailadmin02@gmail.com",
       bio: "this is bio of admin 02",
       roles: [roles[1]],
     },

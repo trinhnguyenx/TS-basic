@@ -32,12 +32,12 @@ export class Boards extends DateTimeEntity {
   @Column({ type: "boolean", default: false })
   public is_archive: boolean;
 
-  @OneToMany(() => Lists, (lists) => lists.boardID)
+  @OneToMany(() => Lists, (lists) => lists.board)
   lists: Lists[];
 
   @ManyToOne(() => Projects, (projects) => projects.boards)
-  projectID: Projects;
+  project: Projects;
 
-  @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.boardID)
+  @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.board)
   boardMembers: BoardMembers;
 }

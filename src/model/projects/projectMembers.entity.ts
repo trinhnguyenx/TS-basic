@@ -21,8 +21,8 @@ export class projectMembers extends DateTimeEntity {
   public role: RoleType;
 
   @ManyToOne(() => Users, (users) => users.projectMembers)
-  userID: Users;
+  user: Users;
 
   @ManyToOne(() => Projects, (projects) => projects.projectMembers)
-  projectID: Projects;
+  project: Projects;
 }

@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 interface Login {
   email: string;
   password: string;
@@ -5,8 +7,20 @@ interface Login {
 interface Token {
   accessToken: string;
   refreshToken: string;
-  expiresIn: number;
+  // expiresIn: number;
   tokenType: string;
 }
 
-export type { Login, Token };
+//  interface AuthenticatedRequest extends Request {
+//   user: {
+//     userId: string; // Adjust these fields based on the decoded JWT payload
+//     iat: number;
+//     exp: number;
+//   };
+  
+// }
+interface AuthenticatedRequest extends Request {
+  user?: string | object;
+}
+
+export type { Login, Token, AuthenticatedRequest };

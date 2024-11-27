@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { authService } from "./auth.service";
 import { Users } from "../../model/users.entity";
 import { ResponseStatus } from "../../services/serviceResponse";
-import { Login } from "./auth.interface";
+import { Login, AuthenticatedRequest } from "./auth.interface";
 import { handleServiceResponse } from "../../services/httpHandlerResponse";
 
 export const AuthController = {

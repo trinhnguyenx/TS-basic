@@ -41,12 +41,12 @@ export class Cards extends DateTimeEntity {
   @Column({ type:"boolean", default: false })
   public is_archive: boolean;
 
-  @OneToMany(() => Comments, (comments) => comments.cardID)
+  @OneToMany(() => Comments, (comments) => comments.card)
   public comments: Comments[];
 
-  @OneToMany(() => CardMembers, (cardMembers) => cardMembers.cardID)
+  @OneToMany(() => CardMembers, (cardMembers) => cardMembers.card)
   public cardMembers: CardMembers[];
 
   @ManyToOne(() => Lists, (lists) => lists.cards)
-  public listID: Lists;
+  public list: Lists;
 }

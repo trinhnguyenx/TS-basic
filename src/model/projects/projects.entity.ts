@@ -29,9 +29,9 @@ export class Projects extends DateTimeEntity {
   @Column({ type: "boolean", default: false })
   public is_archive: boolean;
 
-  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.projectID)
+  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.project)
   projectMembers: projectMembers[];
 
-  @OneToMany(() => Boards, (boards) => boards.projectID)
+  @OneToMany(() => Boards, (boards) => boards.project)
   boards: Boards[];
 }

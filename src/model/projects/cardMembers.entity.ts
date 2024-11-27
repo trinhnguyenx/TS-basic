@@ -21,8 +21,8 @@ export class CardMembers extends DateTimeEntity {
   public role: RoleType;
 
   @ManyToOne(() => Cards, (cards) => cards.cardMembers)
-  public cardID: Cards;
+  public card: Cards;
 
   @ManyToOne(() => Users, (users) => users.cardMembers)
-  public userID: Users;
+  public user: Users;
 }

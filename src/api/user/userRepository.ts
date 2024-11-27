@@ -1,4 +1,5 @@
 import { Users } from "../../model/users.entity";
+import { Profile } from "./user.interface";
 import { Roles } from "../../model/roles.entity";
 import { Permissions } from "../../model/permissions.entity";
 import dataSource from "../../config/typeorm.config";
@@ -27,7 +28,7 @@ export const userRepository = dataSource.getRepository(Users).extend({
 
   async updateUserAsync(
     id: string,
-    updateData: Partial<Users>
+    updateData: Partial<Users  >
   ): Promise<Users | null> {
     await this.update(id, updateData);
     return this.findOneBy({ id });

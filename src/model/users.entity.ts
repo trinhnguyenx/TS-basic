@@ -51,15 +51,15 @@ export class Users extends DateTimeEntity {
   @Column({ type: "datetime", nullable: true })
   public resetTokenExpiresAt: Date;
 
-  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.userID, {
+  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.user, {
     cascade: true,
   })
   projectMembers: projectMembers[];
 
-  @OneToMany(() => Comments, (comments) => comments.userID)
+  @OneToMany(() => Comments, (comments) => comments.user)
   comments: Comments[];
 
-  @OneToMany(() => Notifications, (notifications) => notifications.userID)
+  @OneToMany(() => Notifications, (notifications) => notifications.user)
   notifications: Notifications[];
 
   @ManyToMany(() => Roles, (role) => role.users, {
@@ -68,9 +68,9 @@ export class Users extends DateTimeEntity {
   @JoinTable()
   role: Roles[];
 
-  @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.userID)
+  @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.user)
   boardMembers: BoardMembers;
 
-  @ManyToOne(() => CardMembers, (cardMembers) => cardMembers.userID)
+  @ManyToOne(() => CardMembers, (cardMembers) => cardMembers.user)
   cardMembers: CardMembers;
 }

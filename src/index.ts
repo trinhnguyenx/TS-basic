@@ -1,5 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import authRouter from "./api/auth/auth.router";
+import userRouter from "./api/user/user.router";
+import projectRouter from "./api/projects/project.router";
 import dataSource from "./config/typeorm.config";
 import { pino } from "pino";
 import { seedData } from "./config/seeder";
@@ -26,6 +28,8 @@ async function startApp() {
 startApp();
 
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
+app.use("/projects", projectRouter)
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
