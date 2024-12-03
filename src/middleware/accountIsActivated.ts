@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { userRepository } from "../api/user/userRepository";
 
-import { verifyJwt } from "../services/jwtService";
+import { verifyJwt } from "../services/jwt.service";
 import { AuthenticatedRequest } from "../api/auth/auth.interface";
 
 const accountIsActivated = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise< void> => {
+): Promise<void> => {
   try {
     const userEmail = req.body.email;
     const user = await userRepository.findByEmailAsync(userEmail);

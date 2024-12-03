@@ -12,7 +12,7 @@ import { Cards } from "../model/projects/cards.entity";
 import { Comments } from "../model/projects/comments.entity";
 import { Lists } from "../model/projects/lists.entity";
 import { Notifications } from "../model/projects/notifications.entity";
-import { projectMembers } from "../model/projects/projectMembers.entity";
+import { ProjectMembers } from "../model/projects/projectMembers.entity";
 import { Projects } from "../model/projects/projects.entity";
 
 
@@ -24,7 +24,7 @@ export default new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [Users, Roles, Permissions, Boards,BoardMembers, CardMembers, Cards, Comments, Lists, Notifications, projectMembers, Projects],
+  entities: [Users, Roles, Permissions, Boards,BoardMembers, CardMembers, Cards, Comments, Lists, Notifications, ProjectMembers, Projects],
   migrationsTableName: "migrations",
   migrations: [join(__dirname, "../../src/migrations/**/*.ts")],
   synchronize: false,

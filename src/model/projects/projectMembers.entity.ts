@@ -13,7 +13,7 @@ import { Projects } from "./projects.entity";
 import { RoleType } from "../base/roleType.entity";
 
 @Entity()
-export class projectMembers extends DateTimeEntity {
+export class ProjectMembers extends DateTimeEntity {
   @PrimaryGeneratedColumn("uuid")
   public id: string;
 

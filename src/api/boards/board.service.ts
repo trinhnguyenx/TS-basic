@@ -2,20 +2,21 @@ import bcrypt from "bcryptjs";
 import { Int32 } from "typeorm";
 import { Boards } from "../../model/projects/boards.entity";
 import { boardRepository } from "./boardRepository";
-import {listRepository} from "../lists/listRepository";
+import { listRepository } from "../lists/listRepository";
 import { projectRepository } from "../projects/projectRepository";
 import {
   ServiceResponse,
   ResponseStatus,
-} from "../../services/serviceResponse";
+} from "../../services/serviceResponse.service";
 import { StatusCodes } from "http-status-codes";
 
-import cacheService from "../../services/cacheService";
+import { checkArchive } from "../../services/checkArchive.service";
+import cacheService from "../../services/cache.service";
 // import { cache } from "../../services/cacheService";
-import { generateJwt, verifyJwt } from "../../services/jwtService";
+import { generateJwt, verifyJwt } from "../../services/jwt.service";
 import { Login, Token, AuthenticatedRequest } from "../auth/auth.interface";
-import { calculateUnixTime } from "../../services/caculateDatetime";
-import mailService from "../../services/sendEmail";
+import { calculateUnixTime } from "../../services/caculateDatetime.service";
+import mailService from "../../services/sendEmail.service";
 
 export const boardService = {
   async createBoard(
@@ -32,7 +33,10 @@ export const boardService = {
       if (!project) {
         throw new Error("Project not found");
       }
-      const board = await boardRepository.createBoardAsync(userId, {...boardData, project});
+      const board = await boardRepository.createBoardAsync(userId, {
+        ...boardData,
+        project,
+      });
       console.log("finish create board at service ");
       return new ServiceResponse<Boards>(
         ResponseStatus.Success,
@@ -72,7 +76,7 @@ export const boardService = {
         ResponseStatus.Success,
         "Board updated successfully",
         updatedBoard,
-        StatusCodes.CREATED
+        StatusCodes.OK
       );
     } catch (ex) {
       const errorMessage = `Error updating board: ${(ex as Error).message}`;
@@ -107,7 +111,7 @@ export const boardService = {
         ResponseStatus.Success,
         "Board archived successfully",
         updatedBoard,
-        StatusCodes.CREATED
+        StatusCodes.OK
       );
     } catch (ex) {
       const errorMessage = `Error archiving board: ${(ex as Error).message}`;
@@ -125,34 +129,37 @@ export const boardService = {
     listArray: string[]
   ): Promise<ServiceResponse<string[] | null>> {
     try {
-      
       console.log("listArray:", listArray);
       console.log("userId: ", userId);
 
-      
       listArray.forEach(async (listId, index) => {
         const isListExist = await listRepository.findByIdAsync(listId);
-        if(!isListExist){
+        if (!isListExist) {
           throw new Error("List not found");
         }
         //check the condition when use with findOneBy
-        const isListInBoard = await listRepository.findOneBy({ id: listId, board: { id: boardId } });
-        if(!isListInBoard){
+        const isListInBoard = await listRepository.findOneBy({
+          id: listId,
+          board: { id: boardId },
+        });
+        if (!isListInBoard) {
           throw new Error("List is not in board");
         }
-        const updatedList = await listRepository.updateListAsync(listId, {position: index});
-        if(!updatedList){
+        const updatedList = await listRepository.updateListAsync(listId, {
+          position: index,
+        });
+        if (!updatedList) {
           throw new Error("Can't update list with id: " + listId);
         }
       });
 
       console.log("finish sort list at service ");
-      
+
       return new ServiceResponse<string[]>(
         ResponseStatus.Success,
         "List in board sorted successfully",
         listArray,
-        StatusCodes.CREATED
+        StatusCodes.OK
       );
     } catch (ex) {
       const errorMessage = `Error sort list in board: ${(ex as Error).message}`;

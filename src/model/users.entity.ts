@@ -9,7 +9,7 @@ import {
   Int32,
 } from "typeorm";
 import { DateTimeEntity } from "./base/datetime.entity";
-import { projectMembers } from "./projects/projectMembers.entity";
+import { ProjectMembers } from "./projects/projectMembers.entity";
 import { Comments } from "./projects/comments.entity";
 import { Notifications } from "./projects/notifications.entity";
 import { Roles } from "./roles.entity";
@@ -51,10 +51,10 @@ export class Users extends DateTimeEntity {
   @Column({ type: "datetime", nullable: true })
   public resetTokenExpiresAt: Date;
 
-  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.user, {
+  @OneToMany(() => ProjectMembers, (ProjectMembers) => ProjectMembers.user, {
     cascade: true,
   })
-  projectMembers: projectMembers[];
+  projectMembers: ProjectMembers[];
 
   @OneToMany(() => Comments, (comments) => comments.user)
   comments: Comments[];

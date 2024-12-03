@@ -15,4 +15,16 @@ projectRouter.patch(
   ProjectController.archiveProject
 );
 
+projectRouter.post(
+  "/:projectId/members",
+  authenticateJWT,
+  ProjectController.addMemberToProject
+);
+
+projectRouter.delete(
+  "/:projectId/members/:userId",
+  authenticateJWT,
+  ProjectController.deleteMemberFromProject
+);
+
 export default projectRouter;

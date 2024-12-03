@@ -19,7 +19,8 @@
 - Bổ sung hàm huỷ archive
 - Tìm hiểu lệnh typeorm lồng nhau (thay cho transaction)
 
-
+5/ 17h 3-12
+- Done : sortList, checkArchive (not added)
 
 
 

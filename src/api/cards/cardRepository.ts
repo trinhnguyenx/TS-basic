@@ -32,12 +32,13 @@ export const cardRepository = dataSource.getRepository(Cards).extend({
       if (!user) {
         throw new Error("User not found");
       }
-        const cardMember = manager.create(CardMembers, {
-          user: user,
-          card: savedCard, // typeORM will auto extract id from savedCard, or can use { id: savedCard.id }
-        });
-        // console.log("finish create cardMember at repo");
-        const savedCardMember = await manager.save(cardMember);
+      const cardMember = manager.create(CardMembers, {
+        role: RoleType.ADMIN,
+        user: user,
+        card: savedCard, // typeORM will auto extract id from savedCard, or can use { id: savedCard.id }
+      });
+      // console.log("finish create cardMember at repo");
+      const savedCardMember = await manager.save(cardMember);
       console.log("finish save cardMember at repo: ", savedCardMember);
       return savedCard;
     });
@@ -57,5 +58,17 @@ export const cardRepository = dataSource.getRepository(Cards).extend({
   async deleteCardAsync(id: string): Promise<boolean> {
     await this.delete(id);
     return true;
+  },
+
+  async getCardMemberAsync(
+    userId: string,
+    cardId: string
+  ): Promise<CardMembers|null> {
+    const cardMember = await dataSource
+      .getRepository(CardMembers)
+      .findOne({ where: { user: { id: userId }, card: { id: cardId } } });
+
+    // return !!cardMember; // first ! turn null into true and <object> into false, second ! turn true into false and false into true
+    return cardMember;
   },
 });

@@ -6,15 +6,15 @@ import { boardRepository } from "../boards/boardRepository";
 import {
   ServiceResponse,
   ResponseStatus,
-} from "../../services/serviceResponse";
+} from "../../services/serviceResponse.service";
 import { StatusCodes } from "http-status-codes";
 
-import cacheService from "../../services/cacheService";
+import cacheService from "../../services/cache.service";
 // import { cache } from "../../services/cacheService";
-import { generateJwt, verifyJwt } from "../../services/jwtService";
+import { generateJwt, verifyJwt } from "../../services/jwt.service";
 import { Login, Token, AuthenticatedRequest } from "../auth/auth.interface";
-import { calculateUnixTime } from "../../services/caculateDatetime";
-import mailService from "../../services/sendEmail";
+import { calculateUnixTime } from "../../services/caculateDatetime.service";
+import mailService from "../../services/sendEmail.service";
 
 export const listService = {
   async createList(
@@ -26,12 +26,14 @@ export const listService = {
       console.log("listData:", listData);
       console.log("userid: ", userId);
 
-      
       const board = await boardRepository.findByIdAsync(boardId);
       if (!board) {
         throw new Error("Board not found");
       }
-      const list = await listRepository.createListAsync(userId, {...listData, board});
+      const list = await listRepository.createListAsync(userId, {
+        ...listData,
+        board,
+      });
       console.log("finish create list at service ");
       return new ServiceResponse<Lists>(
         ResponseStatus.Success,
@@ -71,7 +73,7 @@ export const listService = {
         ResponseStatus.Success,
         "List updated successfully",
         updatedList,
-        StatusCodes.CREATED
+        StatusCodes.OK
       );
     } catch (ex) {
       const errorMessage = `Error updating list: ${(ex as Error).message}`;
@@ -106,7 +108,7 @@ export const listService = {
         ResponseStatus.Success,
         "List archived successfully",
         updatedList,
-        StatusCodes.CREATED
+        StatusCodes.OK
       );
     } catch (ex) {
       const errorMessage = `Error archiving list: ${(ex as Error).message}`;

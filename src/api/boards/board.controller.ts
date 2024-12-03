@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { boardService } from "./board.service";
 import { Users } from "../../model/users.entity";
-import { ResponseStatus } from "../../services/serviceResponse";
+import { ResponseStatus } from "../../services/serviceResponse.service";
 import { Profile, decoded } from "../user/user.interface";
 import { Boards } from "../../model/projects/boards.entity";
 import { AuthenticatedRequest } from "../auth/auth.interface";
-import { handleServiceResponse } from "../../services/httpHandlerResponse";
+import { handleServiceResponse } from "../../services/httpHandlerResponse.service";
 
 export const BoardController = {
   async createBoard(req: AuthenticatedRequest, res: Response) {

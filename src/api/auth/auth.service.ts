@@ -5,15 +5,15 @@ import { userRepository } from "../../api/user/userRepository";
 import {
   ServiceResponse,
   ResponseStatus,
-} from "../../services/serviceResponse";
+} from "../../services/serviceResponse.service";
 import { StatusCodes } from "http-status-codes";
 
-import cacheService from "../../services/cacheService";
+import cacheService from "../../services/cache.service";
 // import { cache } from "../../services/cacheService";
-import { generateJwt, verifyJwt } from "../../services/jwtService";
+import { generateJwt, verifyJwt } from "../../services/jwt.service";
 import { Login, Token } from "../auth/auth.interface";
-import { calculateUnixTime } from "../../services/caculateDatetime";
-import mailService from "../../services/sendEmail";
+import { calculateUnixTime } from "../../services/caculateDatetime.service";
+import mailService from "../../services/sendEmail.service";
 import { verify } from "crypto";
 import { log } from "console";
 
@@ -122,7 +122,9 @@ export const authService = {
       );
     }
   },
-  activateEmail: async (token: string): Promise<ServiceResponse<string|null>> => {
+  activateEmail: async (
+    token: string
+  ): Promise<ServiceResponse<string | null>> => {
     try {
       const decodedToken = verifyJwt(token);
       if (!decodedToken) {
@@ -153,7 +155,7 @@ export const authService = {
       }
       const updatedUser = await userRepository.updateUserAsync(user.id, {
         ...user,
-        isActivated: 1 ,
+        isActivated: 1,
       });
       if (!updatedUser) {
         return new ServiceResponse(
@@ -277,22 +279,21 @@ export const authService = {
 
       const verifyEmailToken = generateJwt({ email });
       console.log("verifyEmailToken generated");
-      
 
       const verifyUrl = `http://localhost:3000/auth/activate?token=${verifyEmailToken}`;
       console.log("verifyUrl generated, start send email");
       const mailIsSent = await mailService.sendEmail({
-          emailFrom: "TrelloSGroupProject@gmail.com",
-          emailTo: email,
-          emailSubject: "Verify email",
-          emailText: `Click on the button below to verify your email: <a href="${verifyUrl}">Verify</a>`,
-        });
+        emailFrom: "TrelloSGroupProject@gmail.com",
+        emailTo: email,
+        emailSubject: "Verify email",
+        emailText: `Click on the button below to verify your email: <a href="${verifyUrl}">Verify</a>`,
+      });
 
-        console.log("mailIsSent", mailIsSent);
-     
-        if(!mailIsSent){
-          return false;
-        }
+      console.log("mailIsSent", mailIsSent);
+
+      if (!mailIsSent) {
+        return false;
+      }
 
       // return new ServiceResponse<string>(
       //   ResponseStatus.Success,
@@ -310,5 +311,6 @@ export const authService = {
       //   StatusCodes.INTERNAL_SERVER_ERROR
       // );
       return false;
-    }}
+    }
+  },
 };

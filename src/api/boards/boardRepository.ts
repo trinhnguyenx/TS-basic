@@ -34,7 +34,7 @@ export const boardRepository = dataSource.getRepository(Boards).extend({
       }
       const boardMember = manager.create(BoardMembers, {
         
-        user:user,
+        user: user,
         board: savedBoard, // typeORM will auto extract id from savedBoard, or can use { id: savedBoard.id }
       });
       // console.log("finish create boardMember at repo");
@@ -59,4 +59,22 @@ export const boardRepository = dataSource.getRepository(Boards).extend({
     await this.delete(id);
     return true;
   },
+
+  async getBoardMemberAsync(userId: string, boardId: string): Promise<BoardMembers|null> {
+    const boardMember = await dataSource
+      .getRepository(BoardMembers)
+      .findOne({ where: { user: { id: userId }, board: { id: boardId } } });
+
+    // return !!boardMember; // first ! turn null into true and <object> into false, second ! turn true into false and false into true
+    return boardMember;
+  },
+   
+  async addBoardMemberAsync(userId: string, boardId: string): Promise<BoardMembers> {
+    const boardMember = dataSource.getRepository(BoardMembers).create({
+      
+      user: { id: userId },
+      board: { id: boardId },
+    });
+    return dataSource.getRepository(BoardMembers).save(boardMember);
+  }
 });

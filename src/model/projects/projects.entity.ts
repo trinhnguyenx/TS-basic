@@ -8,7 +8,7 @@ import {
   ManyToMany,
 } from "typeorm";
 import { DateTimeEntity } from "../base/datetime.entity";
-import { projectMembers } from "./projectMembers.entity";
+import { ProjectMembers } from "./projectMembers.entity";
 import { CardMembers } from "./cardMembers.entity";
 import { Boards } from "./boards.entity";
 
@@ -29,8 +29,8 @@ export class Projects extends DateTimeEntity {
   @Column({ type: "boolean", default: false })
   public is_archive: boolean;
 
-  @OneToMany(() => projectMembers, (projectMembers) => projectMembers.project)
-  projectMembers: projectMembers[];
+  @OneToMany(() => ProjectMembers, (ProjectMembers) => ProjectMembers.project)
+  projectMembers: ProjectMembers[];
 
   @OneToMany(() => Boards, (boards) => boards.project)
   boards: Boards[];

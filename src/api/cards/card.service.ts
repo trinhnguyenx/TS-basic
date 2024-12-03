@@ -6,15 +6,15 @@ import { listRepository } from "../lists/listRepository";
 import {
   ServiceResponse,
   ResponseStatus,
-} from "../../services/serviceResponse";
+} from "../../services/serviceResponse.service";
 import { StatusCodes } from "http-status-codes";
 
-import cacheService from "../../services/cacheService";
+import cacheService from "../../services/cache.service";
 // import { cache } from "../../services/cacheService";
-import { generateJwt, verifyJwt } from "../../services/jwtService";
+import { generateJwt, verifyJwt } from "../../services/jwt.service";
 import { Login, Token, AuthenticatedRequest } from "../auth/auth.interface";
-import { calculateUnixTime } from "../../services/caculateDatetime";
-import mailService from "../../services/sendEmail";
+import { calculateUnixTime } from "../../services/caculateDatetime.service";
+import mailService from "../../services/sendEmail.service";
 
 export const cardService = {
   async createCard(
@@ -31,7 +31,10 @@ export const cardService = {
       if (!list) {
         throw new Error("Project not found");
       }
-      const card = await cardRepository.createCardAsync(userId, {...cardData, list});
+      const card = await cardRepository.createCardAsync(userId, {
+        ...cardData,
+        list,
+      });
       console.log("finish create card at service ");
       return new ServiceResponse<Cards>(
         ResponseStatus.Success,
@@ -71,7 +74,7 @@ export const cardService = {
         ResponseStatus.Success,
         "Card updated successfully",
         updatedCard,
-        StatusCodes.CREATED
+        StatusCodes.OK
       );
     } catch (ex) {
       const errorMessage = `Error updating card: ${(ex as Error).message}`;
@@ -106,7 +109,7 @@ export const cardService = {
         ResponseStatus.Success,
         "Card archived successfully",
         updatedCard,
-        StatusCodes.CREATED
+        StatusCodes.OK
       );
     } catch (ex) {
       const errorMessage = `Error archiving card: ${(ex as Error).message}`;

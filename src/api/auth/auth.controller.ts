@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { authService } from "./auth.service";
 import { Users } from "../../model/users.entity";
-import { ResponseStatus } from "../../services/serviceResponse";
+import { ResponseStatus } from "../../services/serviceResponse.service";
 import { Login, AuthenticatedRequest } from "./auth.interface";
-import { handleServiceResponse } from "../../services/httpHandlerResponse";
+import { handleServiceResponse } from "../../services/httpHandlerResponse.service";
 
 export const AuthController = {
   async register(req: Request, res: Response) {
@@ -32,7 +32,6 @@ export const AuthController = {
     }
   },
   async login(req: Request, res: Response) {
-    
     try {
       const loginData: Login = req.body;
       const serviceResponse = await authService.login(loginData);
@@ -60,7 +59,6 @@ export const AuthController = {
     }
   },
   async activateEmail(req: Request, res: Response) {
-    
     try {
       const token = req.query.token as string; //get token from url query
       const serviceResponse = await authService.activateEmail(token);
@@ -75,7 +73,6 @@ export const AuthController = {
         data: null,
       });
     }
-    
   },
 
   async updateRoleUser(req: Request, res: Response) {

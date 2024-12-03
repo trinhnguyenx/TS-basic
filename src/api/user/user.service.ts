@@ -5,15 +5,15 @@ import { userRepository } from "../../api/user/userRepository";
 import {
   ServiceResponse,
   ResponseStatus,
-} from "../../services/serviceResponse";
+} from "../../services/serviceResponse.service";
 import { StatusCodes } from "http-status-codes";
 
-import cacheService from "../../services/cacheService";
+import cacheService from "../../services/cache.service";
 // import { cache } from "../../services/cacheService";
-import { generateJwt, verifyJwt } from "../../services/jwtService";
+import { generateJwt, verifyJwt } from "../../services/jwt.service";
 import { Profile, Token } from "../user/user.interface";
-import { calculateUnixTime } from "../../services/caculateDatetime";
-import mailService from "../../services/sendEmail";
+import { calculateUnixTime } from "../../services/caculateDatetime.service";
+import mailService from "../../services/sendEmail.service";
 import { profile } from "console";
 
 export const userService = {
@@ -61,7 +61,10 @@ export const userService = {
 
       // console.log("userToUpdate:", userToUpdate);
 
-      const updatedUser = await userRepository.updateUserAsync(user.id, userToUpdate);
+      const updatedUser = await userRepository.updateUserAsync(
+        user.id,
+        userToUpdate
+      );
       // console.log("updatedUser:", updatedUser);
 
       if (!updatedUser) {
