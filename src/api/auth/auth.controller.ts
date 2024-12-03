@@ -32,8 +32,9 @@ export const AuthController = {
     }
   },
   async login(req: Request, res: Response) {
-    const loginData: Login = req.body;
+    
     try {
+      const loginData: Login = req.body;
       const serviceResponse = await authService.login(loginData);
       handleServiceResponse(serviceResponse, res);
     } catch (error) {

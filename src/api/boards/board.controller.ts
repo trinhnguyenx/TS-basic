@@ -11,7 +11,8 @@ import { handleServiceResponse } from "../../services/httpHandlerResponse";
 export const BoardController = {
   async createBoard(req: AuthenticatedRequest, res: Response) {
     try {
-      const boardData = {...req.body, projectId: req.params.projectId};
+      // const boardData = { ...req.body, projectId: req.params.projectId };
+      const boardData = req.body;
       const projectId = req.params.projectId;
 
       if (!req.user) {
@@ -26,9 +27,7 @@ export const BoardController = {
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error create board: ${
-        (error as Error).message
-      }`;
+      const errorMessage = `Error create board: ${(error as Error).message}`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: ResponseStatus.Failed,
         message: errorMessage,
@@ -84,9 +83,34 @@ export const BoardController = {
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error archive board: ${
-        (error as Error).message
-      }`;
+      const errorMessage = `Error archive board: ${(error as Error).message}`;
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: ResponseStatus.Failed,
+        message: errorMessage,
+        data: null,
+      });
+    }
+  },
+  async sortLists(req: AuthenticatedRequest, res: Response) {
+    try {
+      const listArray = req.body.sortedListIds;
+      const boardId = req.params.boardId;
+
+      if (!req.user) {
+        throw "Unauthorized";
+      }
+      const userId = (req.user as decoded).userId;
+
+      const serviceResponse = await boardService.sortLists(
+        (req.user as decoded).userId,
+        boardId,
+        listArray
+      );
+      console.log("finish serviceResponse at controller");
+
+      handleServiceResponse(serviceResponse, res);
+    } catch (error) {
+      const errorMessage = `Error archive board: ${(error as Error).message}`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: ResponseStatus.Failed,
         message: errorMessage,

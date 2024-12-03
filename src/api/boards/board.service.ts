@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { Int32 } from "typeorm";
 import { Boards } from "../../model/projects/boards.entity";
 import { boardRepository } from "./boardRepository";
+import {listRepository} from "../lists/listRepository";
 import { projectRepository } from "../projects/projectRepository";
 import {
   ServiceResponse,
@@ -26,15 +27,12 @@ export const boardService = {
       console.log("boardData:", boardData);
       console.log("userid: ", userId);
 
-      const isProjectExist = await projectRepository.findByIdAsync(projectId);
+      const project = await projectRepository.findByIdAsync(projectId);
 
-      if(!isProjectExist){
+      if (!project) {
         throw new Error("Project not found");
       }
-      const board = await boardRepository.createBoardAsync(
-        userId,
-        boardData
-      );
+      const board = await boardRepository.createBoardAsync(userId, {...boardData, project});
       console.log("finish create board at service ");
       return new ServiceResponse<Boards>(
         ResponseStatus.Success,
@@ -113,6 +111,51 @@ export const boardService = {
       );
     } catch (ex) {
       const errorMessage = `Error archiving board: ${(ex as Error).message}`;
+      return new ServiceResponse(
+        ResponseStatus.Failed,
+        errorMessage,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  },
+  async sortLists(
+    userId: string,
+    boardId: string,
+    listArray: string[]
+  ): Promise<ServiceResponse<string[] | null>> {
+    try {
+      
+      console.log("listArray:", listArray);
+      console.log("userId: ", userId);
+
+      
+      listArray.forEach(async (listId, index) => {
+        const isListExist = await listRepository.findByIdAsync(listId);
+        if(!isListExist){
+          throw new Error("List not found");
+        }
+        //check the condition when use with findOneBy
+        const isListInBoard = await listRepository.findOneBy({ id: listId, board: { id: boardId } });
+        if(!isListInBoard){
+          throw new Error("List is not in board");
+        }
+        const updatedList = await listRepository.updateListAsync(listId, {position: index});
+        if(!updatedList){
+          throw new Error("Can't update list with id: " + listId);
+        }
+      });
+
+      console.log("finish sort list at service ");
+      
+      return new ServiceResponse<string[]>(
+        ResponseStatus.Success,
+        "List in board sorted successfully",
+        listArray,
+        StatusCodes.CREATED
+      );
+    } catch (ex) {
+      const errorMessage = `Error sort list in board: ${(ex as Error).message}`;
       return new ServiceResponse(
         ResponseStatus.Failed,
         errorMessage,

@@ -13,6 +13,11 @@
 - Project Api
 - lam rieng flow update anh va update thong tin
 
+4/ 30-11
+- Cần xác định xoá cứng - mềm
+- Bổ sung hàm check role, archive trong project
+- Bổ sung hàm huỷ archive
+- Tìm hiểu lệnh typeorm lồng nhau (thay cho transaction)
 
 
 

@@ -15,4 +15,10 @@ boardRouter.patch(
   BoardController.archiveBoard
 );
 
+boardRouter.patch(
+  "/boards/:boardId/lists/sort",
+  authenticateJWT,
+  BoardController.sortLists
+);
+
 export default boardRouter;

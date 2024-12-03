@@ -20,11 +20,11 @@ export class Cards extends DateTimeEntity {
   @Column({ type: "varchar", length: 255 })
   public title: string;
 
-  @Column({ type: "int", default: 0 })
-  public description: Int32;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  public description: string;
 
   @Column({ type: "int", default: 0 })
-  public position: Int32;
+  public position: number;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   public coverUrl: string;
@@ -38,7 +38,7 @@ export class Cards extends DateTimeEntity {
   @Column({ type: "datetime", nullable: true })
   public dueDate: Date;
 
-  @Column({ type:"boolean", default: false })
+  @Column({ type: "boolean", default: false })
   public is_archive: boolean;
 
   @OneToMany(() => Comments, (comments) => comments.card)

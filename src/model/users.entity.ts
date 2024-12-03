@@ -68,9 +68,9 @@ export class Users extends DateTimeEntity {
   @JoinTable()
   role: Roles[];
 
-  @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.user)
-  boardMembers: BoardMembers;
+  @OneToMany(() => BoardMembers, (boardMembers) => boardMembers.user)
+  boardMembers: BoardMembers[];
 
-  @ManyToOne(() => CardMembers, (cardMembers) => cardMembers.user)
-  cardMembers: CardMembers;
+  @OneToMany(() => CardMembers, (cardMembers) => cardMembers.user)
+  cardMembers: CardMembers[];
 }

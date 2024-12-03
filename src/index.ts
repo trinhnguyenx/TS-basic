@@ -3,9 +3,11 @@ import authRouter from "./api/auth/auth.router";
 import userRouter from "./api/user/user.router";
 import projectRouter from "./api/projects/project.router";
 import boardRouter from "./api/boards/board.router";
+import listRouter from "./api/lists/list.router";
+import cardRouter from "./api/cards/card.router";
 import dataSource from "./config/typeorm.config";
 import { pino } from "pino";
-import { seedData } from "./config/seeder";
+import { seedData } from "./config/seeder.config";
 
 const app: Express = express();
 const port = 3000;
@@ -31,7 +33,9 @@ startApp();
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/projects", projectRouter)
-app.use("/",boardRouter)
+app.use("/",boardRouter);
+app.use("/", listRouter);
+app.use("/", cardRouter);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

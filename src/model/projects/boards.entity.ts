@@ -38,6 +38,6 @@ export class Boards extends DateTimeEntity {
   @ManyToOne(() => Projects, (projects) => projects.boards)
   project: Projects;
 
-  @ManyToOne(() => BoardMembers, (boardMembers) => boardMembers.board)
-  boardMembers: BoardMembers;
+  @OneToMany(() => BoardMembers, (boardMembers) => boardMembers.board)
+  boardMembers: BoardMembers[];
 }

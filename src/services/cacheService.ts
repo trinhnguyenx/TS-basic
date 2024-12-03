@@ -1,4 +1,4 @@
-import redis from "../config/redis";
+import redis from "../config/redis.config";
 const time = 60 * 60 * 24 * 30;
 class CacheService {
   async set(key: string, nestedKey: string, value: any) {

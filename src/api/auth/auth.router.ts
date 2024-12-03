@@ -6,7 +6,7 @@ import accountIsActivated from "../../middleware/accountIsActivated";
 const authRouter = Router();
 
 authRouter.post("/register", AuthController.register);
-authRouter.post("/login", accountIsActivated,AuthController.login); //check isActivate
+authRouter.post("/login", accountIsActivated, AuthController.login); //check isActivate
 authRouter.get("/activate", AuthController.activateEmail);
 authRouter.get("/user/:id",authenticateJWT, AuthController.getUser); //lay cua chinh minh thi ko /:id
 

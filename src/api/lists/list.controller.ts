@@ -1,32 +1,33 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { projectService } from "./project.service";
+import { listService } from "./list.service";
 import { Users } from "../../model/users.entity";
 import { ResponseStatus } from "../../services/serviceResponse";
 import { Profile, decoded } from "../user/user.interface";
-import { Projects } from "../../model/projects/projects.entity";
+import { Lists } from "../../model/projects/lists.entity";
 import { AuthenticatedRequest } from "../auth/auth.interface";
 import { handleServiceResponse } from "../../services/httpHandlerResponse";
 
-export const ProjectController = {
-  async createProject(req: AuthenticatedRequest, res: Response) {
+export const ListController = {
+  async createList(req: AuthenticatedRequest, res: Response) {
     try {
-      const projectData = req.body;
-      
+      // const listData = { ...req.body, boardId: req.params.boardId };
+      const listData = req.body;
+      const boardId = req.params.boardId;
+
       if (!req.user) {
         throw "Unauthorized";
       }
-      const serviceResponse = await projectService.createProject(
+      const serviceResponse = await listService.createList(
         (req.user as decoded).userId,
-        projectData
+        boardId,
+        listData
       );
       console.log("finish serviceResponse at controller");
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error update user profile: ${
-        (error as Error).message
-      }`;
+      const errorMessage = `Error create list: ${(error as Error).message}`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: ResponseStatus.Failed,
         message: errorMessage,
@@ -34,27 +35,26 @@ export const ProjectController = {
       });
     }
   },
-  async updateProject(req: AuthenticatedRequest, res: Response) {
+  async updateList(req: AuthenticatedRequest, res: Response) {
     try {
-      //type
-      const projectData = req.body;
-      const projectId = req.params.projectId;
+      const listData = req.body;
+      const listId = req.params.listId;
 
       if (!req.user) {
         throw "Unauthorized";
       }
       const userId = (req.user as decoded).userId;
 
-      const serviceResponse = await projectService.updateProject(
+      const serviceResponse = await listService.updateList(
         (req.user as decoded).userId,
-        projectId,
-        projectData
+        listId,
+        listData
       );
       console.log("finish serviceResponse at controller");
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error update project data: ${
+      const errorMessage = `Error update list data: ${
         (error as Error).message
       }`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -64,28 +64,26 @@ export const ProjectController = {
       });
     }
   },
-  async archiveProject(req: AuthenticatedRequest, res: Response) {
+  async archiveList(req: AuthenticatedRequest, res: Response) {
     try {
       const isArchive = true;
-      const projectId = req.params.projectId;
+      const listId = req.params.listId;
 
       if (!req.user) {
         throw "Unauthorized";
       }
       const userId = (req.user as decoded).userId;
 
-      const serviceResponse = await projectService.archiveProject(
+      const serviceResponse = await listService.archiveList(
         (req.user as decoded).userId,
-        projectId,
+        listId,
         isArchive
       );
       console.log("finish serviceResponse at controller");
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error archive project: ${
-        (error as Error).message
-      }`;
+      const errorMessage = `Error archive list: ${(error as Error).message}`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: ResponseStatus.Failed,
         message: errorMessage,

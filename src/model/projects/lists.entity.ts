@@ -20,7 +20,7 @@ export class Lists extends DateTimeEntity {
   public title: string;
 
   @Column({ type: "int", default: 0 })
-  public position: Int32;
+  public position: number;
 
   @Column({ type: "boolean", default: false })
   public is_archive: boolean;
