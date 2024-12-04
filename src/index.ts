@@ -5,6 +5,7 @@ import projectRouter from "./api/projects/project.router";
 import boardRouter from "./api/boards/board.router";
 import listRouter from "./api/lists/list.router";
 import cardRouter from "./api/cards/card.router";
+import commentRouter from "./api/comments/comments.router";
 import dataSource from "./config/typeorm.config";
 import { pino } from "pino";
 import { seedData } from "./config/seeder.config";
@@ -36,6 +37,7 @@ app.use("/projects", projectRouter)
 app.use("/",boardRouter);
 app.use("/", listRouter);
 app.use("/", cardRouter);
+app.use("/", commentRouter);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

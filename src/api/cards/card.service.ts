@@ -1,6 +1,6 @@
-import bcrypt from "bcryptjs";
-import { Int32 } from "typeorm";
+import { RoleType } from "../../model/base/roleType.entity";
 import { Cards } from "../../model/projects/cards.entity";
+import { CardMembers } from "../../model/projects/cardMembers.entity";
 import { cardRepository } from "./cardRepository";
 import { listRepository } from "../lists/listRepository";
 import {
@@ -9,13 +9,6 @@ import {
 } from "../../services/serviceResponse.service";
 import { StatusCodes } from "http-status-codes";
 
-import cacheService from "../../services/cache.service";
-// import { cache } from "../../services/cacheService";
-import { generateJwt, verifyJwt } from "../../services/jwt.service";
-import { Login, Token, AuthenticatedRequest } from "../auth/auth.interface";
-import { calculateUnixTime } from "../../services/caculateDatetime.service";
-import mailService from "../../services/sendEmail.service";
-
 export const cardService = {
   async createCard(
     userId: string,
@@ -23,9 +16,6 @@ export const cardService = {
     cardData: Cards
   ): Promise<ServiceResponse<Cards | null>> {
     try {
-      console.log("cardData:", cardData);
-      console.log("userid: ", userId);
-
       const list = await listRepository.findByIdAsync(listId);
 
       if (!list) {
@@ -35,7 +25,7 @@ export const cardService = {
         ...cardData,
         list,
       });
-      console.log("finish create card at service ");
+
       return new ServiceResponse<Cards>(
         ResponseStatus.Success,
         "Card created successfully",
@@ -58,15 +48,11 @@ export const cardService = {
     cardData: Cards
   ): Promise<ServiceResponse<Cards | null>> {
     try {
-      console.log("cardData:", cardData);
-      console.log("userId: ", userId);
-
       const updatedCard = await cardRepository.updateCardAsync(
         cardId,
         cardData
       );
 
-      console.log("finish update card at service ");
       if (!updatedCard) {
         throw new Error("Card not found");
       }
@@ -93,15 +79,12 @@ export const cardService = {
   ): Promise<ServiceResponse<Cards | null>> {
     try {
       const cardData = { is_archive: archive };
-      console.log("cardData:", cardData);
-      console.log("userId: ", userId);
 
       const updatedCard = await cardRepository.updateCardAsync(
         cardId,
         cardData
       );
 
-      console.log("finish archive card at service ");
       if (!updatedCard) {
         throw new Error("Card not found");
       }
@@ -113,6 +96,84 @@ export const cardService = {
       );
     } catch (ex) {
       const errorMessage = `Error archiving card: ${(ex as Error).message}`;
+      return new ServiceResponse(
+        ResponseStatus.Failed,
+        errorMessage,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  },
+  async addMemberToCard(
+    userId: string,
+    cardId: string,
+    memberId: string
+  ): Promise<ServiceResponse<CardMembers | null>> {
+    try {
+      const cardMember = await cardRepository.getCardMemberAsync(
+        memberId,
+        cardId
+      );
+      if (cardMember) {
+        throw new Error("Member already exists in card");
+      }
+      const addedMember = await cardRepository.addCardMemberAsync(
+        memberId,
+        cardId,
+        RoleType.MEMBER
+      );
+
+      if (!addedMember) {
+        throw new Error("Can't add member to card");
+      }
+
+      return new ServiceResponse<CardMembers>(
+        ResponseStatus.Success,
+        "Add member to card successfully",
+        addedMember,
+        StatusCodes.OK
+      );
+    } catch (ex) {
+      const errorMessage = `Error add member to card: ${(ex as Error).message}`;
+      return new ServiceResponse(
+        ResponseStatus.Failed,
+        errorMessage,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    }
+  },
+  async deleteMemberFromCard(
+    userId: string,
+    cardId: string,
+    memberId: string
+  ): Promise<ServiceResponse<CardMembers | null>> {
+    try {
+      const cardMember = await cardRepository.getCardMemberAsync(
+        memberId,
+        cardId
+      );
+      if (!cardMember) {
+        throw new Error("Member not exists in card");
+      }
+
+      const deletedMember = await cardRepository.deleteCardMemberAsync(
+        memberId,
+        cardId
+      );
+
+      if (!deletedMember) {
+        throw new Error("Can't delete member from card");
+      }
+
+      return new ServiceResponse<CardMembers>(
+        ResponseStatus.Success,
+        "Delete member from card successfully",
+        cardMember,
+        StatusCodes.OK
+      );
+    } catch (ex) {
+      const errorMessage = `Error add member to card: ${(ex as Error).message}`;
       return new ServiceResponse(
         ResponseStatus.Failed,
         errorMessage,

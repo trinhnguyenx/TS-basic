@@ -129,10 +129,11 @@ export const boardService = {
     listArray: string[]
   ): Promise<ServiceResponse<string[] | null>> {
     try {
-      console.log("listArray:", listArray);
-      console.log("userId: ", userId);
+      // console.log("listArray:", listArray);
+      // console.log("userId: ", userId);
 
       listArray.forEach(async (listId, index) => {
+        
         const isListExist = await listRepository.findByIdAsync(listId);
         if (!isListExist) {
           throw new Error("List not found");

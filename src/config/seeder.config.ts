@@ -3,6 +3,10 @@ import { Roles } from "../model/roles.entity";
 import { Permissions } from "../model/permissions.entity";
 import { Users } from "../model/users.entity";
 
+import {Notifications} from "../model/projects/notifications.entity";
+
+import {Comments} from "../model/projects/comments.entity";
+
 export async function seedData(dataSource: DataSource) {
   const roleRepository = dataSource.getRepository(Roles);
   const permissionRepository = dataSource.getRepository(Permissions);

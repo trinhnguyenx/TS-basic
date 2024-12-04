@@ -24,10 +24,10 @@ export const cardRepository = dataSource.getRepository(Cards).extend({
     // return this.save(newCard);
     return await dataSource.transaction(async (manager) => {
       const card = await manager.create(Cards, cardData);
-      // console.log("finish create card at repo");
+     
       const savedCard = await manager.save(card);
 
-      // console.log("finish save card at repo");
+      
       const user = await manager.findOne(Users, { where: { id: userId } });
       if (!user) {
         throw new Error("User not found");
@@ -37,9 +37,9 @@ export const cardRepository = dataSource.getRepository(Cards).extend({
         user: user,
         card: savedCard, // typeORM will auto extract id from savedCard, or can use { id: savedCard.id }
       });
-      // console.log("finish create cardMember at repo");
+      
       const savedCardMember = await manager.save(cardMember);
-      console.log("finish save cardMember at repo: ", savedCardMember);
+      
       return savedCard;
     });
   },
@@ -52,7 +52,7 @@ export const cardRepository = dataSource.getRepository(Cards).extend({
 
     return this.findOneBy({ id: id });
 
-    // return this.findOneBy({ id });
+    
   },
 
   async deleteCardAsync(id: string): Promise<boolean> {
@@ -63,12 +63,48 @@ export const cardRepository = dataSource.getRepository(Cards).extend({
   async getCardMemberAsync(
     userId: string,
     cardId: string
-  ): Promise<CardMembers|null> {
+  ): Promise<CardMembers | null> {
     const cardMember = await dataSource
       .getRepository(CardMembers)
       .findOne({ where: { user: { id: userId }, card: { id: cardId } } });
 
     // return !!cardMember; // first ! turn null into true and <object> into false, second ! turn true into false and false into true
     return cardMember;
+  },
+  async addCardMemberAsync(
+    userId: string,
+    cardId: string,
+    role: RoleType
+  ): Promise<CardMembers> {
+    const checkCardMember = await this.getCardMemberAsync(
+      userId,
+      cardId
+    );
+    if (checkCardMember) {
+      throw new Error("Member already exists in card");
+    }
+    const cardMember = dataSource.getRepository(CardMembers).create({
+      role,
+      user: { id: userId },
+      card: { id: cardId },
+    });
+    return dataSource.getRepository(CardMembers).save(cardMember);
+  },
+  async deleteCardMemberAsync(
+    userId: string,
+    cardId: string
+  ): Promise<boolean> {
+    //check if the user is a member of the card
+    const cardMember = await this.getCardMemberAsync(userId, cardId);
+    if (!cardMember) {
+      throw new Error("Member not found in card");
+    }
+
+    //delete the card member
+    const deleteResult = await dataSource.getRepository(CardMembers).delete({
+      user: { id: userId },
+      card: { id: cardId },
+    });
+    return deleteResult.affected !== 0;
   },
 });

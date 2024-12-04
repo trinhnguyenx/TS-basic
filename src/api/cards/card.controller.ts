@@ -1,17 +1,20 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { cardService } from "./card.service";
-import { Users } from "../../model/users.entity";
+import { checkUserRole } from "../../services/checkUserRole.service";
+import { TrelloEntityType } from "../../model/base/trelloEntityType.entity";
+import { RoleType } from "../../model/base/roleType.entity";
+
 import { ResponseStatus } from "../../services/serviceResponse.service";
-import { Profile, decoded } from "../user/user.interface";
-import { Cards } from "../../model/projects/cards.entity";
+import { decoded } from "../user/user.interface";
+
 import { AuthenticatedRequest } from "../auth/auth.interface";
 import { handleServiceResponse } from "../../services/httpHandlerResponse.service";
 
 export const CardController = {
   async createCard(req: AuthenticatedRequest, res: Response) {
     try {
-      // const cardData = { ...req.body, listId: req.params.listId };
+      
       const cardData = req.body;
       const listId = req.params.listId;
 
@@ -91,11 +94,10 @@ export const CardController = {
       });
     }
   },
-
-  //not finished
-  async assignCard(req: AuthenticatedRequest, res: Response) {
+  async addMemberToCard(req: AuthenticatedRequest, res: Response) {
     try {
-      const isArchive = true;
+      const memberId = req.body.userId;
+
       const cardId = req.params.cardId;
 
       if (!req.user) {
@@ -103,16 +105,27 @@ export const CardController = {
       }
       const userId = (req.user as decoded).userId;
 
-      const serviceResponse = await cardService.archiveCard(
+      const checkRole = await checkUserRole(
+        TrelloEntityType.PROJECT,
+        cardId,
+        userId,
+        RoleType.ADMIN
+      );
+      if (!checkRole) {
+        throw "Unauthorized";
+      }
+
+      const serviceResponse = await cardService.addMemberToCard(
         (req.user as decoded).userId,
         cardId,
-        isArchive
+        memberId
       );
-      console.log("finish serviceResponse at controller");
 
       handleServiceResponse(serviceResponse, res);
     } catch (error) {
-      const errorMessage = `Error archive card: ${(error as Error).message}`;
+      const errorMessage = `Error add member to card: ${
+        (error as Error).message
+      }`;
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: ResponseStatus.Failed,
         message: errorMessage,
@@ -120,4 +133,73 @@ export const CardController = {
       });
     }
   },
+  async deleteMemberFromCard(req: AuthenticatedRequest, res: Response) {
+    try {
+      const memberId = req.params.userId;
+
+      const cardId = req.params.cardId;
+    
+
+      if (!req.user) {
+        throw "Unauthorized";
+      }
+      const userId = (req.user as decoded).userId;
+
+      const checkRole = await checkUserRole(
+        TrelloEntityType.PROJECT,
+        cardId,
+        userId,
+        RoleType.ADMIN
+      );
+      if (!checkRole) {
+        throw "Unauthorized";
+      }
+
+      const serviceResponse = await cardService.deleteMemberFromCard(
+        (req.user as decoded).userId,
+        cardId,
+        memberId
+      );
+
+      handleServiceResponse(serviceResponse, res);
+    } catch (error) {
+      const errorMessage = `Error delete member from card: ${
+        (error as Error).message
+      }`;
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: ResponseStatus.Failed,
+        message: errorMessage,
+        data: null,
+      });
+    }
+  },
+
+  //not finished
+  // async assignCard(req: AuthenticatedRequest, res: Response) {
+  //   try {
+  //     const isArchive = true;
+  //     const cardId = req.params.cardId;
+
+  //     if (!req.user) {
+  //       throw "Unauthorized";
+  //     }
+  //     const userId = (req.user as decoded).userId;
+
+  //     const serviceResponse = await cardService.archiveCard(
+  //       (req.user as decoded).userId,
+  //       cardId,
+  //       isArchive
+  //     );
+  //     console.log("finish serviceResponse at controller");
+
+  //     handleServiceResponse(serviceResponse, res);
+  //   } catch (error) {
+  //     const errorMessage = `Error archive card: ${(error as Error).message}`;
+  //     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  //       status: ResponseStatus.Failed,
+  //       message: errorMessage,
+  //       data: null,
+  //     });
+  //   }
+  // },
 };
