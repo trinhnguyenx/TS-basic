@@ -1,5 +1,4 @@
-import bcrypt from "bcryptjs";
-import { Int32 } from "typeorm";
+
 import { Lists } from "../../model/projects/lists.entity";
 import { listRepository } from "./listRepository";
 import { boardRepository } from "../boards/boardRepository";
@@ -9,12 +8,7 @@ import {
 } from "../../services/serviceResponse.service";
 import { StatusCodes } from "http-status-codes";
 
-import cacheService from "../../services/cache.service";
-// import { cache } from "../../services/cacheService";
-import { generateJwt, verifyJwt } from "../../services/jwt.service";
-import { Login, Token, AuthenticatedRequest } from "../auth/auth.interface";
-import { calculateUnixTime } from "../../services/caculateDatetime.service";
-import mailService from "../../services/sendEmail.service";
+
 
 export const listService = {
   async createList(
